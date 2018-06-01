@@ -26,6 +26,13 @@ import multiprocessing as mp
 
 import time
 
+__author__ = "Iulia Radulescu"
+__copyright__ = "Copyright 2015, University Politehnica of Bucharest"
+__license__ = "GNU GPL"
+__version__ = "0.1"
+__email__ = "radulescuiuliamaria@yahoo.com"
+__status__ = "Production"
+
 def random_color():
 	b = randint(0, 255)
 	g = randint(0, 255)
