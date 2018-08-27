@@ -12,3 +12,4 @@ matplotlib
 scipy
 spherecluster
 sklearn
+pyclustering
