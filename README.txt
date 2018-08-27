@@ -10,3 +10,5 @@ Pachete necesare:
 numpy
 matplotlib
 scipy
+spherecluster
+sklearn
