@@ -1,3 +1,4 @@
+!!!! am adaugat mariaclust_comentat_knn, o varianta mult mai stabila si mai logica (fara setarea lui epsilon, bazata pe knn). O explic frumos maine
 Setarea parametrilor:
 
 Setul de puncte de clusterizat: linia 304
