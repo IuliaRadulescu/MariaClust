@@ -1,10 +1,25 @@
-!!!! am adaugat mariaclust_comentat_knn, o varianta mult mai stabila si mai logica (fara setarea lui epsilon, bazata pe knn). O explic frumos maine
-Setarea parametrilor:
+MARIACLUST_FINAL (adaugat asta seara, revin cu explicatie completa maine, codul nu e curatat)
 
-Setul de puncte de clusterizat: linia 304
-Nr de clustere: linia 452
-Nr binuri: linia 329
-Latimea de banda pentru kde: liniile 146, 165
+Parametri pentru Agglomerative:
+
+Metoda calcul clusterizare ierarhica: calculate_average_pairwise (average-linkage)
+Factorul deviatie standard: 1
+Nr. binuri: 6
+Nr. clustere: 7
+
+Parametri pentru jain:
+
+Metoda calcul clusterizare ierarhica: calculate_smallest_pairwise (single-linkage)
+Factorul deviatie standard: 1.5
+Nr. binuri: 2
+Nr. clustere: 2
+
+Parametri pentru spiral:
+
+Metoda calcul clusterizare ierarhica: calculate_smallest_pairwise (single-linkage)
+Factorul deviatie standard: 1.5
+Nr. binuri: 3
+Nr. clustere: 3
 
 Pachete necesare:
 
