@@ -1,11 +1,17 @@
+mariaClust_final.py, ultimele modificari
+	- am inlocuit pragul de expansiune ca fiind o constanta c*(media distantelor dintre fiecare punct si cei mai apropiati 3 vecini ai lui)
+	Imbunatatiri:
+	- rapiditate - mult mai rapid pentru Aggregation
+	- functioneaza si pentru pathbased cu acuratete mare
+
 Legenda Parametri:
 Factor medie - linia 416
 Nr. binuri - linia 603
 Nr. clustere - linia 761
 ------------------------------------------------------
 
-Parametri pentru Agglomerative:
-(MULT MAI RAPID)
+Parametri pentru Aggregation:
+
 Metoda calcul clusterizare ierarhica: calculate_centroid (centroid-linkage)
 
 Factor medie: 2
