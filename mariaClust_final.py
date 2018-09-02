@@ -68,7 +68,7 @@ def agglomerative_clustering2(partitions, nr_final_clusters):
 	while(nr_clusters_agg > nr_final_clusters):
 		uneste_a_idx = 0
 		uneste_b_idx = 0
-		minDist = 9999
+		minDist = 99999
 		minDistancesWeights = list()
 		mdw_uneste_a_idx = list()
 		mdw_uneste_b_idx = list()
@@ -82,7 +82,7 @@ def agglomerative_clustering2(partitions, nr_final_clusters):
 				centroid_q = centroid(cluster_points[(intermediary_centroids[q][0], intermediary_centroids[q][1])])
 				centroid_p = centroid(cluster_points[(intermediary_centroids[p][0], intermediary_centroids[p][1])])
 				if(centroid_q!=centroid_p):
-					dist = calculate_average_pairwise(cluster_points[(intermediary_centroids[q][0], intermediary_centroids[q][1])], cluster_points[(intermediary_centroids[p][0], intermediary_centroids[p][1])])
+					dist = calculate_centroid(cluster_points[(intermediary_centroids[q][0], intermediary_centroids[q][1])], cluster_points[(intermediary_centroids[p][0], intermediary_centroids[p][1])])
 				#calculate_smallest_pairwise pentru jain si spiral
 
 				if(dist<minDist):
@@ -143,17 +143,14 @@ def agglomerative_clustering2(partitions, nr_final_clusters):
 
 def compute_pdf_kde(dataset_xy, x, y):
 	values = np.vstack([x, y])
-	kernel = st.gaussian_kde(values) #bw_method=0.01 pentru spiral
+	kernel = st.gaussian_kde(values) #bw_method=
 	pdf = kernel.evaluate(values)
 
 	scott_fact = kernel.scotts_factor()
 	print("who is scott? "+str(scott_fact))
 	return pdf
 
-def compute_pdf_kde_scikit(dataset_xy):
-	kde = KernelDensity(kernel='gaussian', bandwidth=0.2).fit(dataset_xy)
-	return kde.score_samples(dataset_xy)
-	
+
 def evaluate_pdf_kde(dataset_xy, x, y):
 	xmin = min(x)-2
 	xmax = max(x)+2
@@ -165,7 +162,7 @@ def evaluate_pdf_kde(dataset_xy, x, y):
 	xx, yy = np.mgrid[xmin:xmax:100j, ymin:ymax:100j]
 	positions = np.vstack([xx.ravel(), yy.ravel()])
 	values = np.vstack([x, y])
-	kernel = st.gaussian_kde(values) #bw_method=0.01 pentru spiral
+	kernel = st.gaussian_kde(values) #bw_method=
 	f = np.reshape(kernel(positions).T, xx.shape)
 	return (f,xmin, xmax, ymin, ymax, xx, yy)
 
@@ -214,7 +211,6 @@ def calculate_average_pairwise_ponderat(cluster1, cluster2):
 
 	average_pairwise = 0
 	sum_pairwise = 0
-	nr = 0
 	sum_ponderi = 0
 
 	for pixel1 in cluster1:
@@ -223,7 +219,7 @@ def calculate_average_pairwise_ponderat(cluster1, cluster2):
 			#print("abs = "+str(abs(pixel1[3]-pixel2[3])))
 			sum_pairwise = sum_pairwise + abs(pixel1[3]-pixel2[3])*distBetween
 			sum_ponderi = sum_ponderi + abs(pixel1[3]-pixel2[3])
-			nr = nr+1
+
 	average_pairwise = sum_pairwise/sum_ponderi
 	return average_pairwise
 
@@ -262,6 +258,26 @@ def calculate_average_pairwise_ponderat2(cluster1, cluster2):
 
 	return average_pairwise
 
+def calculate_centroid_density(cluster1, cluster2):
+
+	centroid1 = centroid_density(cluster1)
+	centroid2 = centroid_density(cluster2)
+
+	sum_powers_dens = math.pow(centroid1[0]-centroid2[0], 2) + math.pow(centroid1[1]-centroid2[1], 2) + math.pow(centroid1[2]-centroid2[2], 2)
+
+	dist = math.sqrt(sum_powers_dens)
+
+	return dist
+
+def calculate_ward(cluster1, cluster2):
+
+	centroid1 = centroid(cluster1)
+	centroid2 = centroid(cluster2)
+
+	dist = ( (len(cluster1)*len(cluster2)) / (len(cluster1) + len(cluster2)) )*(DistFunc(centroid1, centroid2)**2)
+
+	return dist
+
 def calculate_average_pairwise(cluster1, cluster2):
 	
 	'''
@@ -284,6 +300,14 @@ def calculate_average_pairwise(cluster1, cluster2):
 	average_pairwise = sum_pairwise/sum_ponderi
 	return average_pairwise
 
+def calculate_centroid(cluster1, cluster2):
+	centroid1 = centroid(cluster1)
+	centroid2 = centroid(cluster2)
+
+	dist = DistFunc(centroid1, centroid2)
+
+	return dist
+
 def centroid(pixels):
 	
 	sum_red = 0;
@@ -299,6 +323,26 @@ def centroid(pixels):
 	green = round(sum_green/len(pixels),2)
 
 	return (red, green)
+
+def centroid_density(pixels):
+	
+	sum_red = 0
+	sum_green = 0
+	sum_blue = 0
+
+	for pixel in pixels:
+		
+		sum_red = sum_red + pixel[0]
+		sum_green = sum_green + pixel[1]
+		sum_blue = sum_blue + pixel[3]
+		
+
+	red = round(sum_red/len(pixels),2)
+	green = round(sum_green/len(pixels),2)
+	blue = round(sum_blue/len(pixels),2)
+
+
+	return (red, green, blue)
 
 def points_equal(x, y):
 	if((x[0]==y[0]) and (x[1]==y[1])):
@@ -327,17 +371,37 @@ def outliers_iqr(ys):
 			outliers_iqr.append(idx)
 	return outliers_iqr
 
+def get_closest_mean(dataset_k):
+
+	k=3
+	distances = list()
+	for point in dataset_k:
+		deja_parsati = list()
+		while(k>0):
+			neigh_id = 0
+			minDist = 99999
+			for id_point_k in range(len(dataset_k)):
+				point_k = dataset_k[id_point_k]
+				if(point_k not in deja_parsati):
+					dist = DistFunc(point, point_k)
+					if(dist < minDist and dist > 0):
+						minDist = dist
+						neigh_id = id_point_k
+			distances.append(minDist)
+			neigh = dataset_k[neigh_id]
+			deja_parsati.append(neigh)
+			k=k-1
+	return sum(distances)/len(distances)
 
 def get_closestk_neigh(point, dataset_k, id_point):
 	#print("len dataset "+str(len(dataset_k)))
 	#print("init point "+str(point)+" id point "+str(id_point))
 
-	dataset_k_aux = dataset_k
 	neigh_ids = list()
 	distances = list()
 	deja_parsati = list()
 	pot_continua = 1
-	
+	closest_mean = get_closest_mean(dataset_k)
 	while(pot_continua==1):
 		minDist = 99999
 		neigh_id = 0
@@ -349,7 +413,7 @@ def get_closestk_neigh(point, dataset_k, id_point):
 					minDist = dist
 					neigh_id = id_point_k
 		if(len(distances)>1):
-			if( ( abs(minDist - np.mean(distances)) <= 1*np.std(distances) )): #1.5 pentru jain si spiral
+			if(minDist <= 2*closest_mean):
 				neigh = dataset_k[neigh_id]
 				neigh_ids.append([neigh_id, neigh])
 				distances.append(minDist)
@@ -361,17 +425,7 @@ def get_closestk_neigh(point, dataset_k, id_point):
 				#helper = np.array(distances)
 				#ceva = np.sqrt(np.mean(abs(helper - helper.mean())**2))
 				#print("ceva "+str(ceva))
-				#print(str(minDist)+" "+str(np.mean(distances))+" "+str(np.std(distances)))
-		elif(len(distances)==1):
-			if( ( abs(minDist - distances[0]) <= 1.5*distances[0] )): #1.5 pentru jain si spiral
-				neigh = dataset_k[neigh_id]
-				neigh_ids.append([neigh_id, neigh])
-				distances.append(minDist)
-				
-				deja_parsati.append(neigh)
-				#print("intra")
-			else:
-				pot_continua = 0
+				print("nu mai pot continua"+str(minDist)+" "+str(closest_mean))
 		else:
 			neigh = dataset_k[neigh_id]
 			neigh_ids.append([neigh_id, neigh])
@@ -382,6 +436,21 @@ def get_closestk_neigh(point, dataset_k, id_point):
 	neigh_ids.sort(key=lambda x: x[1])
 
 	neigh_ids_final = [n_id[0] for n_id in neigh_ids]
+
+	'''for pixel_id in range(len(dataset_k)):
+		pixel = dataset_k[pixel_id]
+		if(pixel_id in neigh_ids_final):
+			plt.scatter(pixel[0], pixel[1], color="r")
+		else:
+			plt.scatter(pixel[0], pixel[1], color="g")
+
+		plt.annotate(str(pixel[2])+" -- "+str(pixel[5]), (pixel[0], pixel[1]))
+
+	plt.scatter(point[0], point[1], color="b")
+	plt.annotate(str(point[2])+" -- "+str(point[5]), (point[0], point[1]))
+	plt.show()'''
+
+	
 
 	print("len neighid fin "+str(len(neigh_ids_final)))
 	return neigh_ids_final
@@ -405,8 +474,6 @@ def expand_knn(point_id):
 	for neigh_id in neigh_ids:
 		print("vecinul "+str(neigh_id))
 		if(pixels_partition_clusters[neigh_id][4]==-1):
-			pixels_partition_clusters[neigh_id][4] = 1
-			pixels_partition_clusters[neigh_id][2] = id_cluster
 			expand_knn(neigh_id)
 		#ce am dupa o expandare
 		'''for pixel_id in range(len(pixels_partition_clusters)):
@@ -533,7 +600,7 @@ Impart punctele din setul de date in n bin-uri in functie de densitatea probabil
 Numarul de bin-uri este numarul de clustere - 1
 '''
 
-pixels_per_bin, bins = np.histogram(pdf, bins=6)
+pixels_per_bin, bins = np.histogram(pdf, bins=8)
 
 #afisare bin-uri rezultate si creare partitii - un bin = o partitie
 for idx_bin in range( (len(bins)-1) ):
@@ -582,7 +649,7 @@ for k in partition_dict:
 		pixels_partition_anchors.append([pixels_partition[pixel_id][0], pixels_partition[pixel_id][1], -1, pdf_partition[pixel_id]])'''
 
 	for pixel in pixels_partition:
-		pixels_partition_clusters.append([pixel[0], pixel[1], -1, pixel[3], -1]) #id cluster, pdf de idx_point, deja_parsat
+		pixels_partition_clusters.append([pixel[0], pixel[1], -1, pdf[pixel[2]], -1, pixel[2]]) #id cluster, pdf de idx_point, deja_parsat, id_point
 		just_points.append([pixel[0], pixel[1]])
 
 	for pixel_id in range(len(pixels_partition_clusters)):
@@ -702,6 +769,9 @@ for k in cluster_points:
 	c = random_color_scaled()
 	for point in cluster_points[k]:
 		plt.scatter(point[0], point[1], color=c)
+
+	'''centroidpt = centroid(cluster_points[k])
+	plt.scatter(centroidpt[0], centroidpt[1], color='r')'''
 
 plt.show()
 
