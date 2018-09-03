@@ -44,6 +44,8 @@ Nr. clustere: 3
 -------------------------------------------------------------------------------------------------
 Datasets:
 
+R15: Nr. Clustere: 15, Nr. Bin-uri: 8, Factor medie: 1, Calcul Distanta: 1 (centroid)
+
 Aggregation: N=788, k=7, D=2 
 A. Gionis, H. Mannila, and P. Tsaparas, Clustering aggregation. ACM Transactions on Knowledge Discovery from Data (TKDD), 2007. 1(1): p. 1-30.
 
