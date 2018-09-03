@@ -604,7 +604,7 @@ if __name__ == "__main__":
 	Numarul de bin-uri este numarul de clustere - 1
 	'''
 
-	pixels_per_bin, bins = np.histogram(pdf, bins=8)
+	pixels_per_bin, bins = np.histogram(pdf, bins=no_bins)
 
 	#afisare bin-uri rezultate si creare partitii - un bin = o partitie
 	for idx_bin in range( (len(bins)-1) ):
