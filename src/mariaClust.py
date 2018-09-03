@@ -75,15 +75,17 @@ def agglomerative_clustering2(partitions, nr_final_clusters):
 		for q in range(len(intermediary_centroids)):
 			for p in range(q+1, len(intermediary_centroids)):
 				
-				#DISTANTA SINGLE LINKAGE
-				#print("------nr_proces:"+str(numar_proces)+" p = "+str(p))
-				#print("------nr_proces:"+str(numar_proces)+" q = "+str(q))
-				#dist = calculate_smallest_pairwise_density(cluster_points[(intermediary_centroids[q][0], intermediary_centroids[q][1])], cluster_points[(intermediary_centroids[p][0], intermediary_centroids[p][1])])
+				# DISTANTA SINGLE LINKAGE
+				# print("------nr_proces:"+str(numar_proces)+" p = "+str(p))
+				# print("------nr_proces:"+str(numar_proces)+" q = "+str(q))
+				# dist = calculate_smallest_pairwise_density(cluster_points[(intermediary_centroids[q][0], intermediary_centroids[q][1])], cluster_points[(intermediary_centroids[p][0], intermediary_centroids[p][1])])
 				centroid_q = centroid(cluster_points[(intermediary_centroids[q][0], intermediary_centroids[q][1])])
 				centroid_p = centroid(cluster_points[(intermediary_centroids[p][0], intermediary_centroids[p][1])])
 				if(centroid_q!=centroid_p):
-					dist = calculate_centroid(cluster_points[(intermediary_centroids[q][0], intermediary_centroids[q][1])], cluster_points[(intermediary_centroids[p][0], intermediary_centroids[p][1])])
-				#calculate_smallest_pairwise pentru jain si spiral
+					# calculate_smallest_pairwise pentru jain si spiral
+					dist = calculate_centroid(cluster_points[(intermediary_centroids[q][0], intermediary_centroids[q][1])], cluster_points[(intermediary_centroids[p][0], intermediary_centroids[p][1])])					
+					# dist = calculate_average_pairwise(cluster_points[(intermediary_centroids[q][0], intermediary_centroids[q][1])], cluster_points[(intermediary_centroids[p][0], intermediary_centroids[p][1])])
+					# dist = calculate_smallest_pairwise(cluster_points[(intermediary_centroids[q][0], intermediary_centroids[q][1])], cluster_points[(intermediary_centroids[p][0], intermediary_centroids[p][1])])
 
 				if(dist<minDist):
 					minDist = dist
