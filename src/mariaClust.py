@@ -569,6 +569,7 @@ ALGORITM MARIACLUST
 if __name__ == "__main__":
 	filename = sys.argv[1]
 	no_clusters = int(sys.argv[2])
+	no_bins = int(sys.argv[3])
 
 	with open(filename) as f:
 		content = f.readlines()
