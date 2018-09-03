@@ -265,7 +265,7 @@ def get_closestk_neigh(point, dataset_k, id_point, factor_medie):
 				deja_parsati.append(neigh)
 			else:
 				pot_continua = 0
-				print("nu mai pot continua"+str(minDist)+" "+str(closest_mean))
+				#print("nu mai pot continua"+str(minDist)+" "+str(closest_mean))
 		else:
 			neigh = dataset_k[neigh_id]
 			neigh_ids.append([neigh_id, neigh])
@@ -304,12 +304,12 @@ def expand_knn(point_id):
 	global id_cluster, clusters, pixels_partition_clusters
 	point = pixels_partition_clusters[point_id]
 	neigh_ids = get_closestk_neigh(point, pixels_partition_clusters, point_id, factor_medie)
-	print("neigh ids "+str(neigh_ids))
+	#print("neigh ids "+str(neigh_ids))
 	clusters[id_cluster].append(point)
 	pixels_partition_clusters[point_id][2] = id_cluster
 	pixels_partition_clusters[point_id][4] = 1
 	for neigh_id in neigh_ids:
-		print("vecinul "+str(neigh_id))
+		#print("vecinul "+str(neigh_id))
 		if(pixels_partition_clusters[neigh_id][4]==-1):
 			expand_knn(neigh_id)
 		
@@ -484,7 +484,7 @@ if __name__ == "__main__":
 						pixels_partition_clusters[neigh_id][4]=1
 						pixels_partition_clusters[neigh_id][2]=id_cluster
 						expand_knn(neigh_id)
-					print("----sfarsit_expandare")
+					#print("----sfarsit_expandare")
 				
 		
 		colors = list()
@@ -497,6 +497,8 @@ if __name__ == "__main__":
 		colors.append(color)
 
 		#print(colors)
+		'''
+		#PLOTARE PARTITII INTERMEDIARE
 		ax = plt.gca()
 		ax.cla() # clear things for fresh plot
 		for pixel in pixels_partition_clusters:
@@ -507,7 +509,7 @@ if __name__ == "__main__":
 				plt.scatter(pixel[0], pixel[1], color=colors[pixel[2]])
 			#ax.add_artist(circle)
 
-		plt.show()
+		plt.show()'''
 
 		inner_partitions = collections.defaultdict(list)
 		inner_partitions_filtered = collections.defaultdict(list)
