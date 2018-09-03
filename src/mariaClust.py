@@ -380,7 +380,7 @@ if __name__ == "__main__":
 	filename = sys.argv[1]
 	no_clusters = int(sys.argv[2]) #numar clustere
 	no_bins = int(sys.argv[3]) #numar binuri 
-	factor_medie = int(sys.argv[4]) #facotrul cu care inmultesc closest mean (cat de mult se poate extinde un cluster pe baza vecinilor)
+	factor_medie = float(sys.argv[4]) #facotrul cu care inmultesc closest mean (cat de mult se poate extinde un cluster pe baza vecinilor)
 	calcul_distanta = int(sys.argv[5])
 	'''
 	calcul distanta, functie de calcul a distantei:
