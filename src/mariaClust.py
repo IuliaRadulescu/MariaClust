@@ -3,7 +3,6 @@ from __future__ import division
 import numpy as np
 import matplotlib.pyplot as plt
 import scipy.stats as st
-# import peakutils
 
 import sys
 import os
@@ -12,32 +11,18 @@ from random import shuffle
 import math
 import collections
 
-import sklearn
-from sklearn.cluster import KMeans
-from scipy.cluster.hierarchy import fcluster, linkage
-from scipy.signal import argrelextrema
-from scipy.spatial import ConvexHull
-
-from sklearn.neighbors.kde import KernelDensity
-
 '''
 =============================================
 FUNCTII AUXILIARE
 '''
 
-def agglomerative_clustering2(partitions, nr_final_clusters):
+def agglomerative_clustering2(partitions, nr_final_clusters, calcul_distanta):
 	'''
 	Clusterizare ierarhica aglomerativa pornind de la niste clustere (partitii) deja create
 	Fiecare partitie este reprezentata de catre centroidul ei
 	Identificatorii partitiilor sunt pastrati in lista intermediary_centroids, iar clusterele cu punctele asociate sunt pastrate in dictionarul cluster_points.
 	cluster_points => cheile sunt identificatorii partitiilor (centroizii lor), iar valorile sunt punctele asociate
-	Criteriul de unire a doua clustere este average link method ponderat
-	Average link method ponderat - functia calculate_average_pairwise
-		- calculeaza media ponderata a punctelor dintre doua clustere candidat
-		- ponderile sunt densitatile punctelor estimate cu metoda kernel density estimation
-	Motivatie utilizare medie ponderata:
-	Clusterele candidat trebuie unite tinand cont si de zona de densitate in care se afla - distanta nu este un criteriu suficient.
-	Astfel favorizez unirea a doua clustere din zone cu densitate asemanatoare.'''
+	Criteriul de unire a doua clustere variaza'''
 	nr_clusters_agg = len(partitions)
 	intermediary_centroids = list()
 	#intermediary_centroids este de o lista cu identificatorii clusterelor
@@ -75,18 +60,21 @@ def agglomerative_clustering2(partitions, nr_final_clusters):
 		for q in range(len(intermediary_centroids)):
 			for p in range(q+1, len(intermediary_centroids)):
 				
-				# DISTANTA SINGLE LINKAGE
-				# print("------nr_proces:"+str(numar_proces)+" p = "+str(p))
-				# print("------nr_proces:"+str(numar_proces)+" q = "+str(q))
-				# dist = calculate_smallest_pairwise_density(cluster_points[(intermediary_centroids[q][0], intermediary_centroids[q][1])], cluster_points[(intermediary_centroids[p][0], intermediary_centroids[p][1])])
 				centroid_q = centroid(cluster_points[(intermediary_centroids[q][0], intermediary_centroids[q][1])])
 				centroid_p = centroid(cluster_points[(intermediary_centroids[p][0], intermediary_centroids[p][1])])
 				if(centroid_q!=centroid_p):
 					# calculate_smallest_pairwise pentru jain si spiral
-					dist = calculate_centroid(cluster_points[(intermediary_centroids[q][0], intermediary_centroids[q][1])], cluster_points[(intermediary_centroids[p][0], intermediary_centroids[p][1])])					
-					# dist = calculate_average_pairwise(cluster_points[(intermediary_centroids[q][0], intermediary_centroids[q][1])], cluster_points[(intermediary_centroids[p][0], intermediary_centroids[p][1])])
-					# dist = calculate_smallest_pairwise(cluster_points[(intermediary_centroids[q][0], intermediary_centroids[q][1])], cluster_points[(intermediary_centroids[p][0], intermediary_centroids[p][1])])
-
+					if(calcul_distanta==1):
+						dist = calculate_centroid(cluster_points[(intermediary_centroids[q][0], intermediary_centroids[q][1])], cluster_points[(intermediary_centroids[p][0], intermediary_centroids[p][1])])					
+					elif(calcul_distanta==2):
+						dist = calculate_average_pairwise(cluster_points[(intermediary_centroids[q][0], intermediary_centroids[q][1])], cluster_points[(intermediary_centroids[p][0], intermediary_centroids[p][1])])
+					elif(calcul_distanta==3):
+						dist = calculate_smallest_pairwise(cluster_points[(intermediary_centroids[q][0], intermediary_centroids[q][1])], cluster_points[(intermediary_centroids[p][0], intermediary_centroids[p][1])])
+					elif(calcul_distanta==4):
+						dist = calculate_average_pairwise_ponderat(cluster_points[(intermediary_centroids[q][0], intermediary_centroids[q][1])], cluster_points[(intermediary_centroids[p][0], intermediary_centroids[p][1])])
+					else:
+						dist = calculate_centroid(cluster_points[(intermediary_centroids[q][0], intermediary_centroids[q][1])], cluster_points[(intermediary_centroids[p][0], intermediary_centroids[p][1])])
+				
 				if(dist<minDist):
 					minDist = dist
 					uneste_a_idx = q
@@ -144,6 +132,10 @@ def agglomerative_clustering2(partitions, nr_final_clusters):
 	return intermediary_centroids, cluster_points
 
 def compute_pdf_kde(dataset_xy, x, y):
+	'''
+	Calculeaza functia probabilitate de densitate si intoarce valorile ei pentru
+	punctele din dataset_xy
+	'''
 	values = np.vstack([x, y])
 	kernel = st.gaussian_kde(values) #bw_method=
 	pdf = kernel.evaluate(values)
@@ -154,6 +146,10 @@ def compute_pdf_kde(dataset_xy, x, y):
 
 
 def evaluate_pdf_kde(dataset_xy, x, y):
+	'''
+	Genereaza graficul in nuante de albastru pentru functia probabilitate de densitate
+	calculata pentru dataset_xy
+	'''
 	xmin = min(x)-2
 	xmax = max(x)+2
 
@@ -169,15 +165,6 @@ def evaluate_pdf_kde(dataset_xy, x, y):
 	return (f,xmin, xmax, ymin, ymax, xx, yy)
 
 
-def compute_avg_dist(points):
-	dist = list()
-	for p in points:
-		for q in points:
-			if(p[0]!=q[0] and p[1]!=q[1]):
-				dist.append(DistFunc(p, q))
-
-	return (sum(dist)/len(dist))
-
 def random_color_scaled():
 	b = randint(0, 255)
 	g = randint(0, 255)
@@ -188,127 +175,6 @@ def random_color_scaled():
 def DistFunc(x, y, printF=2):
 	sum_powers = math.pow(x[0]-y[0], 2) + math.pow(x[1]-y[1], 2)
 	return math.sqrt(sum_powers)
-
-
-def calculate_weight(cluster):
-	densities = list()
-
-	for pixel in cluster:
-		densities.append(pixel[3])
-	
-	densities = np.array(densities)
-	print("res "+str(sum(densities)/len(densities)))
-
-	return sum(densities)/len(densities)
-	
-
-
-def calculate_average_pairwise_ponderat(cluster1, cluster2):
-	
-	'''
-	Average link method ponderat - functia calculate_average_pairwise
-		- calculeaza media ponderata a punctelor dintre doua clustere candidat
-		- ponderile sunt densitatile punctelor estimate cu metoda kernel density estimation
-	'''
-
-	average_pairwise = 0
-	sum_pairwise = 0
-	sum_ponderi = 0
-
-	for pixel1 in cluster1:
-		for pixel2 in cluster2:
-			distBetween = DistFunc(pixel1, pixel2)
-			#print("abs = "+str(abs(pixel1[3]-pixel2[3])))
-			sum_pairwise = sum_pairwise + abs(pixel1[3]-pixel2[3])*distBetween
-			sum_ponderi = sum_ponderi + abs(pixel1[3]-pixel2[3])
-
-	average_pairwise = sum_pairwise/sum_ponderi
-	return average_pairwise
-
-
-def calculate_average_pairwise_ponderat2(cluster1, cluster2):
-	
-	'''
-	Average link method ponderat - functia calculate_average_pairwise
-		- calculeaza media ponderata a punctelor dintre doua clustere candidat
-		- ponderile sunt densitatile punctelor estimate cu metoda kernel density estimation
-	'''
-
-	average_pairwise = 0
-	sum_pairwise = 0
-	nr = 0
-	sum_ponderi = 0
-
-	for pixel1 in cluster1:
-		for pixel2 in cluster2:
-			distBetween = DistFunc(pixel1, pixel2)
-			#print("abs = "+str(abs(pixel1[3]-pixel2[3])))
-			sum_pairwise = sum_pairwise + distBetween
-			sum_ponderi = sum_ponderi + 1
-			nr = nr+1
-	average_pairwise = sum_pairwise/sum_ponderi
-
-	sum_pdf_pixel1 = 0
-	for pixel1 in cluster1:
-		sum_pdf_pixel1 = sum_pdf_pixel1 + pixel1[3]
-
-	sum_pdf_pixel2 = 0
-	for pixel2 in cluster2:
-		sum_pdf_pixel2 = sum_pdf_pixel2 + pixel2[3]
-
-	average_pairwise = average_pairwise + (sum_pdf_pixel1 - sum_pdf_pixel2)*2
-
-	return average_pairwise
-
-def calculate_centroid_density(cluster1, cluster2):
-
-	centroid1 = centroid_density(cluster1)
-	centroid2 = centroid_density(cluster2)
-
-	sum_powers_dens = math.pow(centroid1[0]-centroid2[0], 2) + math.pow(centroid1[1]-centroid2[1], 2) + math.pow(centroid1[2]-centroid2[2], 2)
-
-	dist = math.sqrt(sum_powers_dens)
-
-	return dist
-
-def calculate_ward(cluster1, cluster2):
-
-	centroid1 = centroid(cluster1)
-	centroid2 = centroid(cluster2)
-
-	dist = ( (len(cluster1)*len(cluster2)) / (len(cluster1) + len(cluster2)) )*(DistFunc(centroid1, centroid2)**2)
-
-	return dist
-
-def calculate_average_pairwise(cluster1, cluster2):
-	
-	'''
-	Average link method ponderat - functia calculate_average_pairwise
-		- calculeaza media ponderata a punctelor dintre doua clustere candidat
-		- ponderile sunt densitatile punctelor estimate cu metoda kernel density estimation
-	'''
-
-	average_pairwise = 0
-	sum_pairwise = 0
-	sum_ponderi = 0
-
-	for pixel1 in cluster1:
-		for pixel2 in cluster2:
-			distBetween = DistFunc(pixel1, pixel2)
-			#print("abs = "+str(abs(pixel1[3]-pixel2[3])))
-			sum_pairwise = sum_pairwise + distBetween
-			sum_ponderi = sum_ponderi + 1
-
-	average_pairwise = sum_pairwise/sum_ponderi
-	return average_pairwise
-
-def calculate_centroid(cluster1, cluster2):
-	centroid1 = centroid(cluster1)
-	centroid2 = centroid(cluster2)
-
-	dist = DistFunc(centroid1, centroid2)
-
-	return dist
 
 def centroid(pixels):
 	
@@ -326,41 +192,11 @@ def centroid(pixels):
 
 	return (red, green)
 
-def centroid_density(pixels):
-	
-	sum_red = 0
-	sum_green = 0
-	sum_blue = 0
-
-	for pixel in pixels:
-		
-		sum_red = sum_red + pixel[0]
-		sum_green = sum_green + pixel[1]
-		sum_blue = sum_blue + pixel[3]
-		
-
-	red = round(sum_red/len(pixels),2)
-	green = round(sum_green/len(pixels),2)
-	blue = round(sum_blue/len(pixels),2)
-
-
-	return (red, green, blue)
-
-def points_equal(x, y):
-	if((x[0]==y[0]) and (x[1]==y[1])):
-		return True
-	else:
-		return False
-
-def outliers_z_score(ys):
-	threshold = 3
-
-	mean_y = np.mean(ys)
-	stdev_y = np.std(ys)
-	z_scores = [(y - mean_y) / stdev_y for y in ys]
-	return np.where(np.abs(z_scores) > threshold)
 	
 def outliers_iqr(ys):
+	'''
+	Determina outlierii cu metoda inter-quartilelor
+	'''
 	quartile_1, quartile_3 = np.percentile(ys, [25, 75])
 	iqr = quartile_3 - quartile_1
 	lower_bound = quartile_1 - (iqr * 1.5)
@@ -374,7 +210,10 @@ def outliers_iqr(ys):
 	return outliers_iqr
 
 def get_closest_mean(dataset_k):
+	'''
+	Media distantelor celor mai apropiati k vecini pentru fiecare punct in parte
 
+	'''
 	k=3
 	distances = list()
 	for point in dataset_k:
@@ -395,10 +234,13 @@ def get_closest_mean(dataset_k):
 			k=k-1
 	return sum(distances)/len(distances)
 
-def get_closestk_neigh(point, dataset_k, id_point):
-	#print("len dataset "+str(len(dataset_k)))
-	#print("init point "+str(point)+" id point "+str(id_point))
-
+def get_closestk_neigh(point, dataset_k, id_point, factor_medie):
+	'''
+	Cei mai apropiati v vecini fata de un punct.
+	Numarul v nu e constant, pentru fiecare punct ma extind cat de mult pot, adica
+	atata timp cat distanta dintre punct si urmatorul vecin este mai mica decat
+	factor_medie * closest_mean (closest_mean este calculata de functia anterioara)
+	'''
 	neigh_ids = list()
 	distances = list()
 	deja_parsati = list()
@@ -415,18 +257,14 @@ def get_closestk_neigh(point, dataset_k, id_point):
 					minDist = dist
 					neigh_id = id_point_k
 		if(len(distances)>1):
-			if(minDist <= 2*closest_mean):
+			if(minDist <= factor_medie*closest_mean):
 				neigh = dataset_k[neigh_id]
 				neigh_ids.append([neigh_id, neigh])
 				distances.append(minDist)
 				
 				deja_parsati.append(neigh)
-				#print("intra")
 			else:
 				pot_continua = 0
-				#helper = np.array(distances)
-				#ceva = np.sqrt(np.mean(abs(helper - helper.mean())**2))
-				#print("ceva "+str(ceva))
 				print("nu mai pot continua"+str(minDist)+" "+str(closest_mean))
 		else:
 			neigh = dataset_k[neigh_id]
@@ -452,23 +290,20 @@ def get_closestk_neigh(point, dataset_k, id_point):
 	plt.annotate(str(point[2])+" -- "+str(point[5]), (point[0], point[1]))
 	plt.show()'''
 
-	
-
-	print("len neighid fin "+str(len(neigh_ids_final)))
 	return neigh_ids_final
 
 
 def expand_knn(point_id):
 	'''
 	Extind clusterul curent 
-	Iau cei mai apropiati 5 vecini ai punctului curent
+	Iau cei mai apropiati v vecini ai punctului curent
 	Ii adaug in cluster
-	Iau cei mai apropiati 5 vecini ai punctelor urmatoare
-	Cand toate punctele sunt parcurse ma opresc si incep cluster nou
+	Iau cei mai apropiati v vecini ai celor v vecini
+	Cand toate punctele sunt parcurse (toti vecinii au fost parcursi) ma opresc si incep cluster nou
 	'''
 	global id_cluster, clusters, pixels_partition_clusters
 	point = pixels_partition_clusters[point_id]
-	neigh_ids = get_closestk_neigh(point, pixels_partition_clusters, point_id)
+	neigh_ids = get_closestk_neigh(point, pixels_partition_clusters, point_id, factor_medie)
 	print("neigh ids "+str(neigh_ids))
 	clusters[id_cluster].append(point)
 	pixels_partition_clusters[point_id][2] = id_cluster
@@ -477,43 +312,45 @@ def expand_knn(point_id):
 		print("vecinul "+str(neigh_id))
 		if(pixels_partition_clusters[neigh_id][4]==-1):
 			expand_knn(neigh_id)
-		#ce am dupa o expandare
-		'''for pixel_id in range(len(pixels_partition_clusters)):
-			pixel = pixels_partition_clusters[pixel_id]
-			if(pixel[2]!=-1):
-				plt.scatter(pixel[0], pixel[1], color="r")
-			else:
-				plt.scatter(pixel[0], pixel[1], color="g")
-
-		plt.show()'''
-		print("----sfarsit_expandare")
 		
 
-def calculate_average_cluster(dataset_xy):
-	distances = list()
-	print("dataset================= "+str(dataset_xy))
-	for point_a in dataset_xy:
-		for point_b in dataset_xy:
-			dist = DistFunc(point_a, point_b)
-			if(dist > 0):
-				distances.append(dist)
+def calculate_average_pairwise_ponderat(cluster1, cluster2):
+	
+	'''
+	Average link method ponderat - functia calculate_average_pairwise
+		- calculeaza media ponderata a punctelor dintre doua clustere candidat
+		- ponderile sunt densitatile punctelor estimate cu metoda kernel density estimation
+	'''
 
-	avg = sum(distances)/len(distances)
+	average_pairwise = 0
+	sum_pairwise = 0
+	sum_ponderi = 0
 
-	return avg
+	for pixel1 in cluster1:
+		for pixel2 in cluster2:
+			distBetween = DistFunc(pixel1, pixel2)
+			#print("abs = "+str(abs(pixel1[3]-pixel2[3])))
+			sum_pairwise = sum_pairwise + abs(pixel1[3]-pixel2[3])*distBetween
+			sum_ponderi = sum_ponderi + abs(pixel1[3]-pixel2[3])
 
-def calculage_average_interpart(part_a, part_b):
-	distances = list()
+	average_pairwise = sum_pairwise/sum_ponderi
+	return average_pairwise
 
-	for point_a in part_a:
-		for point_b in part_b:
-			dist = DistFunc(point_a, point_b)
-			if(dist > 0):
-				distances.append(dist)
 
-	avg = sum(distances)/len(distances)
+def calculate_average_pairwise(cluster1, cluster2):
 
-	return avg
+	average_pairwise = 0
+	sum_pairwise = 0
+	nr = 0
+
+	for pixel1 in cluster1:
+		for pixel2 in cluster2:
+			distBetween = DistFunc(pixel1, pixel2)
+			sum_pairwise = sum_pairwise + distBetween
+			nr = nr + 1
+
+	average_pairwise = sum_pairwise/nr
+	return average_pairwise
 
 def calculate_smallest_pairwise(cluster1, cluster2):
 
@@ -526,43 +363,14 @@ def calculate_smallest_pairwise(cluster1, cluster2):
 					min_pairwise = distBetween
 	return min_pairwise
 
-def calculate_smallest_pairwise_density(cluster1, cluster2):
 
-	min_pairwise = 999999
-	for pixel1 in cluster1:
-		for pixel2 in cluster2:
-			if(pixel1!=pixel2):
-				distBetween = DistFunc(pixel1, pixel2)
-				if(distBetween < min_pairwise):
-					min_pairwise = distBetween*math.fabs(pixel1[3]-pixel2[3])
-	return min_pairwise
+def calculate_centroid(cluster1, cluster2):
+	centroid1 = centroid(cluster1)
+	centroid2 = centroid(cluster2)
 
-def get_furthest_points(intermediary_results_final, nrPoints):
+	dist = DistFunc(centroid1, centroid2)
 
-	furthest_points = list()
-	print(intermediary_results_final)
-	#incep din punctul cu pdf maxim (cea mai mare densitate)
-	intermediary_results_final.sort(key=lambda x: x[3])
-
-	furthest_points.append(intermediary_results_final[0])
-
-	for i in range(nrPoints):
-		max_d_sum = 0
-		max_sum_pixel = 0;	
-		for pixel in intermediary_results_final:
-				
-			dist_anchor_sum = 0
-			for anchor in furthest_points:
-				pixel_np = np.array(pixel)
-				anchor_np = np.array(anchor)
-				d_anchor = DistFunc(pixel_np, anchor_np)
-				dist_anchor_sum = dist_anchor_sum + d_anchor
-			if(dist_anchor_sum > max_d_sum):
-				max_d_sum = dist_anchor_sum
-				max_sum_pixel = pixel
-		furthest_points.append(max_sum_pixel)
-
-	return furthest_points
+	return dist
 
 '''
 =============================================
@@ -570,8 +378,17 @@ ALGORITM MARIACLUST
 '''
 if __name__ == "__main__":
 	filename = sys.argv[1]
-	no_clusters = int(sys.argv[2])
-	no_bins = int(sys.argv[3])
+	no_clusters = int(sys.argv[2]) #numar clustere
+	no_bins = int(sys.argv[3]) #numar binuri 
+	factor_medie = int(sys.argv[4]) #facotrul cu care inmultesc closest mean (cat de mult se poate extinde un cluster pe baza vecinilor)
+	calcul_distanta = int(sys.argv[5])
+	'''
+	calcul distanta, functie de calcul a distantei:
+	1 = centroid linkage
+	2 = average linkage
+	3 = single linkage
+	4 = average linkage ponderat
+	'''
 
 	with open(filename) as f:
 		content = f.readlines()
@@ -624,13 +441,7 @@ if __name__ == "__main__":
 	'''
 	Pasul anterior atribuie zonele care au aceeasi densitate aceluiasi cluster, chiar daca aceste zone se afla la distanta mare una fata de cealalta.
 	De aceea aplic un algoritm similar DBSCAN pentru a determina cat de mult se extinde o zona de densitate, si astfel partitionez zonele care se afla la distanta mare una fata de alta.
-	Pentru fiecare partitie creata la pasul anterior, verific pentru fiecare punct apartinand partitiei daca la o distanta eps calculata acesta are cel putin un vecin.
-		- aici trebuie stabilita o formula de calcul a numarului de vecini, in general merge cu unul singur, dar in anumite cazuri are tendinta sa creeze lantisoare.
 	Unesc partitiile rezultate in urma separarii utilizand clusterizarea ierarhica aglomerativa modificata (utilizeaza media ponderata pentru unirea clusterelor)
-		- detalii comment functie agglomerative_clustering2
-	Motivatie utilizare medie ponderata:
-		Clusterele candidat trebuie unite tinand cont si de zona de densitate in care se afla - distanta nu este un criteriu suficient.
-		Astfel favorizez unirea a doua clustere din zone cu densitate asemanatoare.
 	'''
 
 	for k in partition_dict:
@@ -660,27 +471,15 @@ if __name__ == "__main__":
 
 		for pixel_id in range(len(pixels_partition_clusters)):
 			pixel = pixels_partition_clusters[pixel_id]
-
-			'''for pixel_id_d in range(len(pixels_partition_clusters)):
-
-				pixel_d = pixels_partition_clusters[pixel_id_d]
-				pixel_helper_d = [pixel_d[0], pixel_d[1]]
-				if(pixel_helper_d in anchor_points):
-					if(pixel_d[4]!=-1):
-						plt.scatter(pixel_d[0], pixel_d[1], color="r")
-					else:
-						plt.scatter(pixel_d[0], pixel_d[1], color="g")
-			plt.show()'''
 				
 			if(pixels_partition_clusters[pixel_id][2]==-1):
 				id_cluster = id_cluster + 1
 				pixels_partition_clusters[pixel_id][4] = 1
 				pixels_partition_clusters[pixel_id][2] = id_cluster
 				clusters[id_cluster].append(pixel)
-				neigh_ids = get_closestk_neigh(pixel, pixels_partition_clusters, pixel_id)
-				print("neigh ids "+str(neigh_ids))
+				neigh_ids = get_closestk_neigh(pixel, pixels_partition_clusters, pixel_id, factor_medie)
+				
 				for neigh_id in neigh_ids:
-					print("vecinul "+str(neigh_id))
 					if(pixels_partition_clusters[neigh_id][2]==-1):
 						pixels_partition_clusters[neigh_id][4]=1
 						pixels_partition_clusters[neigh_id][2]=id_cluster
@@ -725,7 +524,7 @@ if __name__ == "__main__":
 				part_id_inner = part_id_inner+1
 
 
-		#filter partitions
+		#filter partitions - le elimin pe cele care contin un singur punct
 		keys_to_delete = list()
 		for k in inner_partitions:
 			if(len(inner_partitions[k])<=1):
@@ -744,15 +543,6 @@ if __name__ == "__main__":
 			final_partitions[part_id] = inner_partitions_filtered[part_id_inner]
 			part_id = part_id + 1
 
-		
-	#filter partitions
-	'''keys_to_delete = list()
-	for k in final_partitions:
-		if(len(final_partitions[k])<=1): #2 pentru celelalte in afara de aggregations
-			keys_to_delete.append(k)
-
-	for k in keys_to_delete:
-		final_partitions.pop(k)'''
 
 	#print partititons
 
@@ -764,7 +554,7 @@ if __name__ == "__main__":
 	plt.show()
 
 
-	intermediary_centroids, cluster_points = agglomerative_clustering2(final_partitions, no_clusters) #paramateri: partitiile rezultate, numarul de clustere
+	intermediary_centroids, cluster_points = agglomerative_clustering2(final_partitions, no_clusters, calcul_distanta) #paramateri: partitiile rezultate, numarul de clustere
 	print(intermediary_centroids)
 	print("==============================")
 	#print(cluster_points)
