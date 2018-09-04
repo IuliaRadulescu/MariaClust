@@ -26,7 +26,7 @@ Run example: python3 mariaClust.py aggregation.txt 7 8 1 1
 	* Expand Factor: 1 
 	* Dinstance Type: 1 (centroid)
 * run:
-	python3 src/mariaClust.py datasets/aggregation.txt 7 8 1 1
+	* python3 src/mariaClust.py datasets/aggregation.txt 7 8 1 1
 * article:
 	* A. Gionis, H. Mannila, and P. Tsaparas, Clustering aggregation. ACM Transactions on Knowledge Discovery from Data (TKDD), 2007. 1(1): p. 1-30.
 
