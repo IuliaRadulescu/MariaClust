@@ -69,7 +69,7 @@ Run example: python3 mariaClust.py aggregation.txt 7 8 1 1
 * article:
 	* A. Jain and M. Law, Data clustering: A user's dilemma. Lecture Notes in Computer Science, 2005. 3776: p. 1-10. 
 
-### Pathbased: N=300, k=3, D=2 
+### Pathbased
 * Pathbased details: 
 	* No. Elements: 300
 	* No. Dimensions: 2
@@ -90,7 +90,7 @@ Run example: python3 mariaClust.py aggregation.txt 7 8 1 1
 * article:
 	* L. Fu and E. Medico, FLAME, a novel fuzzy clustering method for the analysis of DNA microarray data. BMC bioinformatics, 2007. 8(1): p. 3. 
 
-### D31: N=3100, k=31, D=2 
+### D31
 * D31 details:
 	* No. Elements: 3100
 	* No. Dimensions: 2
@@ -98,7 +98,7 @@ Run example: python3 mariaClust.py aggregation.txt 7 8 1 1
 * article:
 	* C.J. Veenman, M.J.T. Reinders, and E. Backer, A maximum variance cluster algorithm. IEEE Trans. Pattern Analysis and Machine Intelligence 2002. 24(9): p. 1273-1280. 
 
-### Compound: N=399, k=6, D=2 
+### Compound
 * Compound details:
 	* No. Elements: 399
 	* No. Dimensions: 6
