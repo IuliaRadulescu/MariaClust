@@ -16,14 +16,14 @@ import collections
 FUNCTII AUXILIARE
 '''
 
-def agglomerative_clustering2(partitions, nr_final_clusters, calcul_distanta):
+def agglomerative_clustering2(partitions, final_no_clusters, cluster_distance):
 	'''
 	Clusterizare ierarhica aglomerativa pornind de la niste clustere (partitii) deja create
 	Fiecare partitie este reprezentata de catre centroidul ei
 	Identificatorii partitiilor sunt pastrati in lista intermediary_centroids, iar clusterele cu punctele asociate sunt pastrate in dictionarul cluster_points.
 	cluster_points => cheile sunt identificatorii partitiilor (centroizii lor), iar valorile sunt punctele asociate
 	Criteriul de unire a doua clustere variaza'''
-	nr_clusters_agg = len(partitions)
+	no_agg_clusters = len(partitions)
 	intermediary_centroids = list()
 	#intermediary_centroids este de o lista cu identificatorii clusterelor
 	
@@ -50,7 +50,7 @@ def agglomerative_clustering2(partitions, nr_final_clusters, calcul_distanta):
 
 	#print cluster_points
 
-	while(nr_clusters_agg > nr_final_clusters):
+	while(no_agg_clusters > final_no_clusters):
 		uneste_a_idx = 0
 		uneste_b_idx = 0
 		minDist = 99999
@@ -64,14 +64,14 @@ def agglomerative_clustering2(partitions, nr_final_clusters, calcul_distanta):
 				centroid_p = centroid(cluster_points[(intermediary_centroids[p][0], intermediary_centroids[p][1])])
 				if(centroid_q!=centroid_p):
 					# calculate_smallest_pairwise pentru jain si spiral
-					if(calcul_distanta==1):
+					if(cluster_distance==1):
 						dist = calculate_centroid(cluster_points[(intermediary_centroids[q][0], intermediary_centroids[q][1])], cluster_points[(intermediary_centroids[p][0], intermediary_centroids[p][1])])					
-					elif(calcul_distanta==2):
+					elif(cluster_distance==2):
 						dist = calculate_average_pairwise(cluster_points[(intermediary_centroids[q][0], intermediary_centroids[q][1])], cluster_points[(intermediary_centroids[p][0], intermediary_centroids[p][1])])
-					elif(calcul_distanta==3):
+					elif(cluster_distance==3):
 						dist = calculate_smallest_pairwise(cluster_points[(intermediary_centroids[q][0], intermediary_centroids[q][1])], cluster_points[(intermediary_centroids[p][0], intermediary_centroids[p][1])])
-					elif(calcul_distanta==4):
-						dist = calculate_average_pairwise_ponderat(cluster_points[(intermediary_centroids[q][0], intermediary_centroids[q][1])], cluster_points[(intermediary_centroids[p][0], intermediary_centroids[p][1])])
+					elif(cluster_distance==4):
+						dist = calculate_weighted_average_pairwise(cluster_points[(intermediary_centroids[q][0], intermediary_centroids[q][1])], cluster_points[(intermediary_centroids[p][0], intermediary_centroids[p][1])])
 					else:
 						dist = calculate_centroid(cluster_points[(intermediary_centroids[q][0], intermediary_centroids[q][1])], cluster_points[(intermediary_centroids[p][0], intermediary_centroids[p][1])])
 				
@@ -81,12 +81,11 @@ def agglomerative_clustering2(partitions, nr_final_clusters, calcul_distanta):
 					uneste_b_idx = p
 					
 		helperCluster = list()
+
 		for cluster_point in cluster_points[(intermediary_centroids[uneste_a_idx][0], intermediary_centroids[uneste_a_idx][1])]:
-			
 			helperCluster.append(cluster_point)
 		
 		for cluster_point in cluster_points[(intermediary_centroids[uneste_b_idx][0], intermediary_centroids[uneste_b_idx][1])]:
-			
 			helperCluster.append(cluster_point)
 
 		
@@ -123,10 +122,8 @@ def agglomerative_clustering2(partitions, nr_final_clusters, calcul_distanta):
 		---de ce am scazut 1
 		'''
 
-		intermediary_centroids.append(newCluster)
-
-		
-		nr_clusters_agg = len(cluster_points)
+		intermediary_centroids.append(newCluster)	
+		no_agg_clusters = len(cluster_points)
 		
 
 	return intermediary_centroids, cluster_points
@@ -234,12 +231,12 @@ def get_closest_mean(dataset_k):
 			k=k-1
 	return sum(distances)/len(distances)
 
-def get_closestk_neigh(point, dataset_k, id_point, factor_medie):
+def get_closestk_neigh(point, dataset_k, id_point, expand_factor):
 	'''
 	Cei mai apropiati v vecini fata de un punct.
 	Numarul v nu e constant, pentru fiecare punct ma extind cat de mult pot, adica
 	atata timp cat distanta dintre punct si urmatorul vecin este mai mica decat
-	factor_medie * closest_mean (closest_mean este calculata de functia anterioara)
+	expand_factor * closest_mean (closest_mean este calculata de functia anterioara)
 	'''
 	neigh_ids = list()
 	distances = list()
@@ -257,7 +254,7 @@ def get_closestk_neigh(point, dataset_k, id_point, factor_medie):
 					minDist = dist
 					neigh_id = id_point_k
 		if(len(distances)>1):
-			if(minDist <= factor_medie*closest_mean):
+			if(minDist <= expand_factor*closest_mean):
 				neigh = dataset_k[neigh_id]
 				neigh_ids.append([neigh_id, neigh])
 				distances.append(minDist)
@@ -303,7 +300,7 @@ def expand_knn(point_id):
 	'''
 	global id_cluster, clusters, pixels_partition_clusters
 	point = pixels_partition_clusters[point_id]
-	neigh_ids = get_closestk_neigh(point, pixels_partition_clusters, point_id, factor_medie)
+	neigh_ids = get_closestk_neigh(point, pixels_partition_clusters, point_id, expand_factor)
 	#print("neigh ids "+str(neigh_ids))
 	clusters[id_cluster].append(point)
 	pixels_partition_clusters[point_id][2] = id_cluster
@@ -314,7 +311,7 @@ def expand_knn(point_id):
 			expand_knn(neigh_id)
 		
 
-def calculate_average_pairwise_ponderat(cluster1, cluster2):
+def calculate_weighted_average_pairwise(cluster1, cluster2):
 	
 	'''
 	Average link method ponderat - functia calculate_average_pairwise
@@ -378,12 +375,12 @@ ALGORITM MARIACLUST
 '''
 if __name__ == "__main__":
 	filename = sys.argv[1]
-	no_clusters = int(sys.argv[2]) #numar clustere
-	no_bins = int(sys.argv[3]) #numar binuri 
-	factor_medie = float(sys.argv[4]) #facotrul cu care inmultesc closest mean (cat de mult se poate extinde un cluster pe baza vecinilor)
-	calcul_distanta = int(sys.argv[5])
+	no_clusters = int(sys.argv[2]) #no  clusters
+	no_bins = int(sys.argv[3]) #no bins
+	expand_factor = float(sys.argv[4]) # expantion factor how much a cluster can expand based on the number of neighbours -- factorul cu care inmultesc closest mean (cat de mult se poate extinde un cluster pe baza vecinilor)
+	cluster_distance = int(sys.argv[5])
 	'''
-	calcul distanta, functie de calcul a distantei:
+	how you compute the dinstance between clusters:
 	1 = centroid linkage
 	2 = average linkage
 	3 = single linkage
@@ -477,7 +474,7 @@ if __name__ == "__main__":
 				pixels_partition_clusters[pixel_id][4] = 1
 				pixels_partition_clusters[pixel_id][2] = id_cluster
 				clusters[id_cluster].append(pixel)
-				neigh_ids = get_closestk_neigh(pixel, pixels_partition_clusters, pixel_id, factor_medie)
+				neigh_ids = get_closestk_neigh(pixel, pixels_partition_clusters, pixel_id, expand_factor)
 				
 				for neigh_id in neigh_ids:
 					if(pixels_partition_clusters[neigh_id][2]==-1):
@@ -556,7 +553,7 @@ if __name__ == "__main__":
 	plt.show()
 
 
-	intermediary_centroids, cluster_points = agglomerative_clustering2(final_partitions, no_clusters, calcul_distanta) #paramateri: partitiile rezultate, numarul de clustere
+	intermediary_centroids, cluster_points = agglomerative_clustering2(final_partitions, no_clusters, cluster_distance) #paramateri: partitiile rezultate, numarul de clustere
 	print(intermediary_centroids)
 	print("==============================")
 	#print(cluster_points)
