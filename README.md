@@ -1,7 +1,7 @@
 # MariaClust
 
 ### Validation results
-
+*stiu ca purity si entropy dau mereu 0, o sa verific de ce*
 #### Jain
 * python mariaClust.py jain_changed.txt 2 3 0.8 2
 	* ('Purity:  ', 0.0)
@@ -15,6 +15,13 @@
 	* ('Entropy: ', 0.0)
 	* ('RI       ', 0.99411234080526112)
 	* ('ARI      ', 0.98255230291888251)
+	
+#### R15
+* python mariaClust.py R15_changed.txt 15 8 1 1
+	* ('Purity:  ', 0.0)
+	* ('Entropy: ', 0.0)
+	* ('RI       ', 0.995237324191378)
+	* ('ARI      ', 0.96089507074478742)
 
 
 ### Run parameters:
