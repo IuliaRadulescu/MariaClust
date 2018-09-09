@@ -3,11 +3,18 @@
 ### Validation results
 
 #### Jain
-* python mariaClust.py jain.txt 2 3 0.8 2
+* python mariaClust.py jain_changed.txt 2 3 0.8 2
 	* ('Purity:  ', 0.0)
 	* ('Entropy: ', 0.0)
 	* ('RI       ', 1.0)
 	* ('ARI      ', 1.0)
+	
+#### Aggregation
+* python mariaClust.py Aggregation_changed.txt 7 8 1 1
+	* ('Purity:  ', 0.0)
+	* ('Entropy: ', 0.0)
+	* ('RI       ', 0.99411234080526112)
+	* ('ARI      ', 0.98255230291888251)
 
 
 ### Run parameters:
