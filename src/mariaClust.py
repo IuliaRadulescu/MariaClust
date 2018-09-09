@@ -238,6 +238,7 @@ def get_closestk_neigh(point, dataset_k, id_point, expand_factor):
 	atata timp cat distanta dintre punct si urmatorul vecin este mai mica decat
 	expand_factor * closest_mean (closest_mean este calculata de functia anterioara)
 	'''
+	
 	neigh_ids = list()
 	distances = list()
 	deja_parsati = list()
@@ -264,11 +265,21 @@ def get_closestk_neigh(point, dataset_k, id_point, expand_factor):
 				pot_continua = 0
 				#print("nu mai pot continua"+str(minDist)+" "+str(closest_mean))
 		else:
-			neigh = dataset_k[neigh_id]
-			neigh_ids.append([neigh_id, neigh])
-			distances.append(minDist)
-			
-			deja_parsati.append(neigh)
+			if(len(distances)>0 and minDist <= expand_factor*closest_mean):
+				neigh = dataset_k[neigh_id]
+				neigh_ids.append([neigh_id, neigh])
+				distances.append(minDist)
+				
+				deja_parsati.append(neigh)
+			elif(len(distances)==0):
+				neigh = dataset_k[neigh_id]
+				neigh_ids.append([neigh_id, neigh])
+				distances.append(minDist)
+				
+				deja_parsati.append(neigh)
+			else:
+				pot_continua = 0
+				#print("nu mai pot continua"+str(minDist)+" "+str(closest_mean))
 
 	neigh_ids.sort(key=lambda x: x[1])
 
@@ -290,7 +301,7 @@ def get_closestk_neigh(point, dataset_k, id_point, expand_factor):
 	return neigh_ids_final
 
 
-def expand_knn(point_id):
+def expand_knn(point_id, expand_factor):
 	'''
 	Extind clusterul curent 
 	Iau cei mai apropiati v vecini ai punctului curent
@@ -308,7 +319,7 @@ def expand_knn(point_id):
 	for neigh_id in neigh_ids:
 		#print("vecinul "+str(neigh_id))
 		if(pixels_partition_clusters[neigh_id][4]==-1):
-			expand_knn(neigh_id)
+			expand_knn(neigh_id, expand_factor)
 		
 
 def calculate_weighted_average_pairwise(cluster1, cluster2):
@@ -369,6 +380,190 @@ def calculate_centroid(cluster1, cluster2):
 
 	return dist
 
+def split_partitions(partition_dict, expand_factor):
+	global id_cluster, clusters, pixels_partition_clusters,pdf
+
+	print(expand_factor)
+	noise = list()
+	part_id=0
+	final_partitions = collections.defaultdict(list)
+	clusters = collections.defaultdict(list)
+
+	for k in partition_dict:
+		pixels_partition = partition_dict[k]
+
+		x_partition = list()
+		y_partition = list()
+		color = random_color_scaled()
+		for point in pixels_partition:
+			x_partition.append(point[0])
+			y_partition.append(point[1])
+
+		clusters = collections.defaultdict(list)
+		id_cluster = -1
+
+		pixels_partition_clusters = list()
+		pixels_partition_anchors = list()
+		just_points = list()
+		
+		'''pdf_partition = compute_pdf_kde(pixels_partition, x_partition, y_partition)
+		for pixel_id in range(len(pixels_partition)):
+			pixels_partition_anchors.append([pixels_partition[pixel_id][0], pixels_partition[pixel_id][1], -1, pdf_partition[pixel_id]])'''
+
+		for pixel in pixels_partition:
+			pixels_partition_clusters.append([pixel[0], pixel[1], -1, pdf[pixel[2]], -1, pixel[2], pixel[4]]) #id cluster, pdf de idx_point, deja_parsat, id_point si clasa din care face parte pctul
+			just_points.append([pixel[0], pixel[1]])
+
+		for pixel_id in range(len(pixels_partition_clusters)):
+			pixel = pixels_partition_clusters[pixel_id]
+				
+			if(pixels_partition_clusters[pixel_id][2]==-1):
+				id_cluster = id_cluster + 1
+				pixels_partition_clusters[pixel_id][4] = 1
+				pixels_partition_clusters[pixel_id][2] = id_cluster
+				clusters[id_cluster].append(pixel)
+				neigh_ids = get_closestk_neigh(pixel, pixels_partition_clusters, pixel_id, expand_factor)
+				
+				for neigh_id in neigh_ids:
+					if(pixels_partition_clusters[neigh_id][2]==-1):
+						pixels_partition_clusters[neigh_id][4]=1
+						pixels_partition_clusters[neigh_id][2]=id_cluster
+						expand_knn(neigh_id, expand_factor)
+					#print("----sfarsit_expandare")
+				
+		
+		colors = list()
+		for i in range(len(clusters)):
+			color = random_color_scaled()
+			colors.append(color)
+
+		#si pentru minus 1
+		color = random_color_scaled()
+		colors.append(color)
+
+		#print(colors)
+
+		
+		'''
+		#PLOTARE PARTITII INTERMEDIARE
+		ax = plt.gca()
+		ax.cla() # clear things for fresh plot
+		f_partition, xmin, xmax, ymin, ymax, xx_partition, yy_partition = evaluate_pdf_kde(pixels_partition, x_partition, y_partition)
+		plt.contourf(xx_partition, yy_partition, f_partition, cmap='Blues')
+		for pixel in pixels_partition_clusters:
+			#circle = plt.Circle((pixel[0], pixel[1]), eps, color='b', fill=False)
+			if(pixel[2]==-1):
+				plt.scatter(pixel[0], pixel[1], color=colors[len(colors)-1])
+			else:
+				plt.scatter(pixel[0], pixel[1], color=colors[pixel[2]])
+			#ax.add_artist(circle)
+
+
+
+		plt.show()
+		'''
+
+		inner_partitions = collections.defaultdict(list)
+		inner_partitions_filtered = collections.defaultdict(list)
+		part_id_inner = 0
+		for i in range(len(clusters)):
+			for pixel in pixels_partition_clusters:
+				if(pixel[2]==i):
+					inner_partitions[part_id_inner].append(pixel)
+			part_id_inner = part_id_inner+1
+		#adaug si zgomotul
+		for pixel in pixels_partition_clusters:
+			if(pixel[2]==-1):
+				inner_partitions[part_id_inner].append(pixel)
+				part_id_inner = part_id_inner+1
+				
+
+		#filter partitions - le elimin pe cele care contin un singur punct
+		keys_to_delete = list()
+		for k in inner_partitions:
+			if(len(inner_partitions[k])<=1):
+				keys_to_delete.append(k)
+				#salvam aceste puncte si le reasignam la sfarsit celui mai apropiat cluster
+				if(len(inner_partitions[k])>0):
+					for pinner in inner_partitions[k]:
+						noise.append(pinner)
+		for k in keys_to_delete:
+			del inner_partitions[k]
+
+		part_id_filtered = 0
+		for part_id_k in inner_partitions:
+			inner_partitions_filtered[part_id_filtered] = inner_partitions[part_id_k]
+			part_id_filtered = part_id_filtered + 1
+
+
+		for part_id_inner in inner_partitions_filtered:
+			final_partitions[part_id] = inner_partitions_filtered[part_id_inner]
+			part_id = part_id + 1
+
+	return (final_partitions, noise)
+
+def create_validation_dict(clase_pcte, cluster_points, intermediary_centroids):
+	'''
+	{
+	clasa_1 : {cluster_1: 140, cluster_2: 10},
+	clasa_2 : {cluster_1:  20, cluster_2: 230}
+	}
+	'''
+	evaluation_dict = {}
+
+	for clasa_pct in clase_pcte: #clase pcte e un dictionar care are ca iduri numerele claselor
+		print("clasa pct: "+str(clasa_pct))
+		clusters_dict = {}
+		for centroid in intermediary_centroids:
+			#pentru fiecare clasa, parcurgem clusterele unul cate unul sa vedem cate puncte avem din clasa respectiva
+			pcte_clasa_in_cluster = list()
+			print("=====centroid "+str(centroid))
+			for pixel in cluster_points[centroid]:
+				if(pixel[6]==clasa_pct):
+					pcte_clasa_in_cluster.append((pixel[0], pixel[1]))
+
+				'''
+				Linia comentata se aplica in cazul in care cluster_1 este un tuplu format doar din punctele din clasa_1 care apartin de cluster_1
+				Dar cred ca am inteles gresit si de fapt cluster1 este un tuplu cu toate punctele din acel cluster, ca mai jos
+				
+				tuplu_pcte_clasa_in_cluster = tuple(point for point in pcte_clasa_in_cluster)
+				'''
+				tuplu_pcte_clasa_in_cluster = tuple( (point[0], point[1]) for point in cluster_points[centroid])
+				clusters_dict[tuplu_pcte_clasa_in_cluster] = len(pcte_clasa_in_cluster)			
+
+		#verificare
+		for clusterx in clusters_dict:
+			print("=====nr_pcte in clasa pct in clusterul x "+str(clusters_dict[clusterx]))
+
+		tuplu_pcte_in_clasa = tuple(point for point in clase_pcte[clasa_pct])
+		evaluation_dict[clasa_pct] = clusters_dict
+
+	'''
+	#Pentru evaluare
+	with open('results.txt', 'a') as the_file:
+		the_file.write("FORMAT PENTRU EVALUARE "+str(evaluation_dict)+"\n")
+		the_file.write("DETALII =============\n\n")
+		id_clasa_pct=0
+		for classofpoints in evaluation_dict:
+			the_file.write("PCTELE DIN CLASA "+str(id_clasa_pct)+" SUNT IMPARTITE IN CELE 2 CLUSTERE ASTFEL\n\n")
+			for points_in_cluster in evaluation_dict[classofpoints]:
+				the_file.write(str(points_in_cluster))
+				the_file.write("\n\n")
+			id_clasa_pct=id_clasa_pct + 1
+		the_file.write("NR PCTE FIECARE =============\n\n")
+		id_clasa_pct=0
+		for classofpoints in evaluation_dict:
+			the_file.write("NR PCTE DIN CLASA "+str(id_clasa_pct)+" SUNT IMPARTITE IN CELE 2 CLUSTERE ASTFEL\n\n")
+			for points_in_cluster in evaluation_dict[classofpoints]:
+				the_file.write(str(evaluation_dict[classofpoints][points_in_cluster]))
+				the_file.write("\n\n")
+			id_clasa_pct=id_clasa_pct + 1
+	'''
+	
+	return evaluation_dict
+
+
+
 '''
 =============================================
 ALGORITM MARIACLUST
@@ -394,11 +589,16 @@ if __name__ == "__main__":
 	x = list()
 	y = list()
 	dataset_xy = list()
+	dataset_xy_validate = list()
+	clase_pcte = collections.defaultdict(list)
+
 	for l in content:
 		aux = l.split('\t')
 		x.append(float(aux[0]))
 		y.append(float(aux[1]))
 		dataset_xy.append([float(aux[0]), float(aux[1])])
+		dataset_xy_validate.append([float(aux[0]), float(aux[1]), int(aux[2])]) #aux[2] este nr cluster
+		clase_pcte[int(aux[2])].append((float(aux[0]), float(aux[1])))
 
 	pdf = compute_pdf_kde(dataset_xy, x, y) #calculez functia densitate probabilitate utilizand kde
 	f,xmin, xmax, ymin, ymax, xx, yy = evaluate_pdf_kde(dataset_xy, x, y) #pentru afisare zone dense albastre
@@ -412,9 +612,7 @@ if __name__ == "__main__":
 	dataset_xy = [dataset_xy[i] for i in range(len(dataset_xy)) if i not in outliers_iqr_pdf]
 
 	partition_dict = collections.defaultdict(list)
-	final_partitions = collections.defaultdict(list)
-
-
+	
 	'''
 	Impart punctele din setul de date in n bin-uri in functie de densitatea probabilitatii. 
 	Numarul de bin-uri este numarul de clustere - 1
@@ -428,121 +626,19 @@ if __name__ == "__main__":
 		for idx_point in range(len(dataset_xy)):
 			if(pdf[idx_point]>=bins[idx_bin] and pdf[idx_point]<bins[idx_bin+1]):
 				plt.scatter(dataset_xy[idx_point][0], dataset_xy[idx_point][1], color=culoare)
-				partition_dict[idx_bin].append([dataset_xy[idx_point][0], dataset_xy[idx_point][1], idx_point, pdf[idx_point]]) #mentin si id-ul punctului in setul de date si densitatea de probabilitate in acel punct - o sa am nevoie pentru clusterizarea ierarhica - criteriu de unire - average link method ponderat
+				partition_dict[idx_bin].append( [dataset_xy[idx_point][0], dataset_xy[idx_point][1], idx_point, pdf[idx_point], dataset_xy_validate[idx_point][2]]) #mentin si id-ul punctului in setul de date, densitatea de probabilitate in acel punct si clasa din care face parte pctul 
 
 	plt.show()
 
-	noise = list()
-	part_id=0
 
 	'''
 	Pasul anterior atribuie zonele care au aceeasi densitate aceluiasi cluster, chiar daca aceste zone se afla la distanta mare una fata de cealalta.
 	De aceea aplic un algoritm similar DBSCAN pentru a determina cat de mult se extinde o zona de densitate, si astfel partitionez zonele care se afla la distanta mare una fata de alta.
 	Unesc partitiile rezultate in urma separarii utilizand clusterizarea ierarhica aglomerativa modificata (utilizeaza media ponderata pentru unirea clusterelor)
 	'''
-
-	for k in partition_dict:
-		pixels_partition = partition_dict[k]
-
-		x_partition = list()
-		y_partition = list()
-		color = random_color_scaled()
-		for point in pixels_partition:
-			x_partition.append(point[0])
-			y_partition.append(point[1])
-
-		clusters = collections.defaultdict(list)
-		id_cluster = -1
-
-		pixels_partition_clusters = list()
-		pixels_partition_anchors = list()
-		just_points = list()
-		
-		'''pdf_partition = compute_pdf_kde(pixels_partition, x_partition, y_partition)
-		for pixel_id in range(len(pixels_partition)):
-			pixels_partition_anchors.append([pixels_partition[pixel_id][0], pixels_partition[pixel_id][1], -1, pdf_partition[pixel_id]])'''
-
-		for pixel in pixels_partition:
-			pixels_partition_clusters.append([pixel[0], pixel[1], -1, pdf[pixel[2]], -1, pixel[2]]) #id cluster, pdf de idx_point, deja_parsat, id_point
-			just_points.append([pixel[0], pixel[1]])
-
-		for pixel_id in range(len(pixels_partition_clusters)):
-			pixel = pixels_partition_clusters[pixel_id]
-				
-			if(pixels_partition_clusters[pixel_id][2]==-1):
-				id_cluster = id_cluster + 1
-				pixels_partition_clusters[pixel_id][4] = 1
-				pixels_partition_clusters[pixel_id][2] = id_cluster
-				clusters[id_cluster].append(pixel)
-				neigh_ids = get_closestk_neigh(pixel, pixels_partition_clusters, pixel_id, expand_factor)
-				
-				for neigh_id in neigh_ids:
-					if(pixels_partition_clusters[neigh_id][2]==-1):
-						pixels_partition_clusters[neigh_id][4]=1
-						pixels_partition_clusters[neigh_id][2]=id_cluster
-						expand_knn(neigh_id)
-					#print("----sfarsit_expandare")
-				
-		
-		colors = list()
-		for i in range(len(clusters)):
-			color = random_color_scaled()
-			colors.append(color)
-
-		#si pentru minus 1
-		color = random_color_scaled()
-		colors.append(color)
-
-		#print(colors)
-		'''
-		#PLOTARE PARTITII INTERMEDIARE
-		ax = plt.gca()
-		ax.cla() # clear things for fresh plot
-		for pixel in pixels_partition_clusters:
-			#circle = plt.Circle((pixel[0], pixel[1]), eps, color='b', fill=False)
-			if(pixel[2]==-1):
-				plt.scatter(pixel[0], pixel[1], color=colors[len(colors)-1])
-			else:
-				plt.scatter(pixel[0], pixel[1], color=colors[pixel[2]])
-			#ax.add_artist(circle)
-
-		plt.show()'''
-
-		inner_partitions = collections.defaultdict(list)
-		inner_partitions_filtered = collections.defaultdict(list)
-		part_id_inner = 0
-		for i in range(len(clusters)):
-			for pixel in pixels_partition_clusters:
-				if(pixel[2]==i):
-					inner_partitions[part_id_inner].append(pixel)
-			part_id_inner = part_id_inner+1
-		#adaug si zgomotul
-		for pixel in pixels_partition_clusters:
-			if(pixel[2]==-1):
-				inner_partitions[part_id_inner].append(pixel)
-				part_id_inner = part_id_inner+1
-
-
-		#filter partitions - le elimin pe cele care contin un singur punct
-		keys_to_delete = list()
-		for k in inner_partitions:
-			if(len(inner_partitions[k])<=1):
-				keys_to_delete.append(k)
-
-		for k in keys_to_delete:
-			del inner_partitions[k]
-
-		part_id_filtered = 0
-		for part_id_k in inner_partitions:
-			inner_partitions_filtered[part_id_filtered] = inner_partitions[part_id_k]
-			part_id_filtered = part_id_filtered + 1
-
-
-		for part_id_inner in inner_partitions_filtered:
-			final_partitions[part_id] = inner_partitions_filtered[part_id_inner]
-			part_id = part_id + 1
-
-
+	
+	final_partitions, noise = split_partitions(partition_dict, expand_factor) #functie care scindeaza partitiile
+	print("len noise "+str(len(noise)))
 	#print partititons
 
 	for k in final_partitions:
@@ -554,7 +650,24 @@ if __name__ == "__main__":
 
 
 	intermediary_centroids, cluster_points = agglomerative_clustering2(final_partitions, no_clusters, cluster_distance) #paramateri: partitiile rezultate, numarul de clustere
-	print(intermediary_centroids)
+	
+	#reasignez zgomotul clasei cu cel mai apropiat vecin
+
+	for noise_point in noise:
+		#verific care e cel mai apropiat cluster de punctul noise_point
+		closest_centroid = 0
+		minDist = 99999
+		for centroid in intermediary_centroids:
+			for pixel in cluster_points[centroid]:
+				dist = DistFunc(noise_point, pixel)
+				if(dist < minDist):
+					minDist = dist
+					closest_centroid = centroid
+		cluster_points[closest_centroid].append(noise_point)
+
+
+	create_validation_dict(clase_pcte, cluster_points, intermediary_centroids)
+	#print(intermediary_centroids)
 	print("==============================")
 	#print(cluster_points)
 
@@ -564,9 +677,6 @@ if __name__ == "__main__":
 		c = random_color_scaled()
 		for point in cluster_points[k]:
 			plt.scatter(point[0], point[1], color=c)
-
-		'''centroidpt = centroid(cluster_points[k])
-		plt.scatter(centroidpt[0], centroidpt[1], color='r')'''
 
 	plt.show()
 
