@@ -265,7 +265,7 @@ def get_closestk_neigh(point, dataset_k, id_point, expand_factor):
 				deja_parsati.append(neigh)
 			else:
 				pot_continua = 0
-				#print("nu mai pot continua"+str(minDist)+" "+str(closest_mean))
+				
 		else:
 			if(len(distances)>0 and minDist <= expand_factor*closest_mean):
 				neigh = dataset_k[neigh_id]
@@ -281,7 +281,7 @@ def get_closestk_neigh(point, dataset_k, id_point, expand_factor):
 				deja_parsati.append(neigh)
 			else:
 				pot_continua = 0
-				#print("nu mai pot continua"+str(minDist)+" "+str(closest_mean))
+				
 
 	neigh_ids.sort(key=lambda x: x[1])
 
@@ -314,12 +314,12 @@ def expand_knn(point_id, expand_factor):
 	global id_cluster, clusters, pixels_partition_clusters
 	point = pixels_partition_clusters[point_id]
 	neigh_ids = get_closestk_neigh(point, pixels_partition_clusters, point_id, expand_factor)
-	#print("neigh ids "+str(neigh_ids))
+	
 	clusters[id_cluster].append(point)
 	pixels_partition_clusters[point_id][2] = id_cluster
 	pixels_partition_clusters[point_id][4] = 1
 	for neigh_id in neigh_ids:
-		#print("vecinul "+str(neigh_id))
+		
 		if(pixels_partition_clusters[neigh_id][4]==-1):
 			expand_knn(neigh_id, expand_factor)
 		
@@ -339,7 +339,7 @@ def calculate_weighted_average_pairwise(cluster1, cluster2):
 	for pixel1 in cluster1:
 		for pixel2 in cluster2:
 			distBetween = DistFunc(pixel1, pixel2)
-			#print("abs = "+str(abs(pixel1[3]-pixel2[3])))
+			
 			sum_pairwise = sum_pairwise + abs(pixel1[3]-pixel2[3])*distBetween
 			sum_ponderi = sum_ponderi + abs(pixel1[3]-pixel2[3])
 
@@ -585,6 +585,7 @@ def evaluate_cluster(clase_points, cluster_points):
 		idx += 1
 
 
+
 	for point in point2class:		
 		if point2cluster.get(point, -1) == -1:
 			print("punct pierdut dupa clustering:", point)
@@ -659,7 +660,7 @@ if __name__ == "__main__":
 	for idx_bin in range( (len(bins)-1) ):
 		culoare = random_color_scaled()
 		for idx_point in range(len(dataset_xy)):
-			if(pdf[idx_point]>=bins[idx_bin] and pdf[idx_point]<bins[idx_bin+1]):
+			if(pdf[idx_point]>=bins[idx_bin] and pdf[idx_point]<=bins[idx_bin+1]):
 				plt.scatter(dataset_xy[idx_point][0], dataset_xy[idx_point][1], color=culoare)
 				partition_dict[idx_bin].append( [dataset_xy[idx_point][0], dataset_xy[idx_point][1], idx_point, pdf[idx_point], dataset_xy_validate[idx_point][2]]) #mentin si id-ul punctului in setul de date, densitatea de probabilitate in acel punct si clasa din care face parte pctul 
 
@@ -703,9 +704,9 @@ if __name__ == "__main__":
 
 	# create_validation_dict(clase_points, cluster_points, intermediary_centroids)
 	evaluate_cluster(clase_points, cluster_points)
-	#print(intermediary_centroids)
+	
 	print("==============================")
-	#print(cluster_points)
+	
 
 	plt.contourf(xx, yy, f, cmap='Blues')
 	#afisare finala
