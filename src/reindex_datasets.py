@@ -3,7 +3,7 @@ import sys
 
 '''
 Primeste ca parametru niste fisiere de tipul seturilor de date de test (float \t float \t int)
-si le reindexeaza de la 0
+si le reindexeaza de la 0 -> fisierele noi au numele de tipul fisiervechi_changed.extensiefisiervechi
 (poate primi orice numar de fisiere ca parametru)
 '''
 
