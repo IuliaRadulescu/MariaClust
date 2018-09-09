@@ -10,6 +10,8 @@ from random import randint
 from random import shuffle
 import math
 import collections
+import evaluation_measures
+
 
 '''
 =============================================
@@ -502,7 +504,7 @@ def split_partitions(partition_dict, expand_factor):
 
 	return (final_partitions, noise)
 
-def create_validation_dict(clase_pcte, cluster_points, intermediary_centroids):
+def create_validation_dict(clase_points, cluster_points, intermediary_centroids):
 	'''
 	{
 	clasa_1 : {cluster_1: 140, cluster_2: 10},
@@ -511,7 +513,7 @@ def create_validation_dict(clase_pcte, cluster_points, intermediary_centroids):
 	'''
 	evaluation_dict = {}
 
-	for clasa_pct in clase_pcte: #clase pcte e un dictionar care are ca iduri numerele claselor
+	for clasa_pct in clase_points: #clase pcte e un dictionar care are ca iduri numerele claselor
 		print("clasa pct: "+str(clasa_pct))
 		clusters_dict = {}
 		for centroid in intermediary_centroids:
@@ -535,7 +537,7 @@ def create_validation_dict(clase_pcte, cluster_points, intermediary_centroids):
 		for clusterx in clusters_dict:
 			print("=====nr_pcte in clasa pct in clusterul x "+str(clusters_dict[clusterx]))
 
-		tuplu_pcte_in_clasa = tuple(point for point in clase_pcte[clasa_pct])
+		tuplu_pcte_in_clasa = tuple(point for point in clase_points[clasa_pct])
 		evaluation_dict[clasa_pct] = clusters_dict
 
 	'''
@@ -559,9 +561,40 @@ def create_validation_dict(clase_pcte, cluster_points, intermediary_centroids):
 				the_file.write("\n\n")
 			id_clasa_pct=id_clasa_pct + 1
 	'''
-	
+	print(evaluation_dict)
 	return evaluation_dict
 
+def evaluate_cluster(clase_points, cluster_points):
+	evaluation_dict = {}
+	point2cluster = {}
+	point2class = {}
+
+	idx = 0
+	for elem in clase_points:
+		evaluation_dict[idx] = {}
+		for points in clase_points[elem]:
+			point2class[points] = idx
+		idx += 1
+
+	idx = 0
+	for elem in cluster_points:
+		for point in cluster_points[elem]:
+			point2cluster[(point[0], point[1])] = idx
+		for c in evaluation_dict:
+			evaluation_dict[c][idx] = 0
+		idx += 1
+
+	
+
+	for point in point2cluster:
+		# verific daca punctul initial exista in cluster
+		evaluation_dict[point2class[point]][point2cluster[point]] += 1
+			
+
+	print('Purity:  ', evaluation_measures.purity(evaluation_dict))
+	print('Entropy: ', evaluation_measures.entropy(evaluation_dict)) # perfect results have entropy == 0
+	print('RI       ', evaluation_measures.rand_index(evaluation_dict))
+	print('ARI      ', evaluation_measures.adj_rand_index(evaluation_dict))
 
 
 '''
@@ -590,7 +623,7 @@ if __name__ == "__main__":
 	y = list()
 	dataset_xy = list()
 	dataset_xy_validate = list()
-	clase_pcte = collections.defaultdict(list)
+	clase_points = collections.defaultdict(list)
 
 	for l in content:
 		aux = l.split('\t')
@@ -598,7 +631,7 @@ if __name__ == "__main__":
 		y.append(float(aux[1]))
 		dataset_xy.append([float(aux[0]), float(aux[1])])
 		dataset_xy_validate.append([float(aux[0]), float(aux[1]), int(aux[2])]) #aux[2] este nr cluster
-		clase_pcte[int(aux[2])].append((float(aux[0]), float(aux[1])))
+		clase_points[int(aux[2])].append((float(aux[0]), float(aux[1])))
 
 	pdf = compute_pdf_kde(dataset_xy, x, y) #calculez functia densitate probabilitate utilizand kde
 	f,xmin, xmax, ymin, ymax, xx, yy = evaluate_pdf_kde(dataset_xy, x, y) #pentru afisare zone dense albastre
@@ -651,6 +684,7 @@ if __name__ == "__main__":
 
 	intermediary_centroids, cluster_points = agglomerative_clustering2(final_partitions, no_clusters, cluster_distance) #paramateri: partitiile rezultate, numarul de clustere
 	
+
 	#reasignez zgomotul clasei cu cel mai apropiat vecin
 
 	for noise_point in noise:
@@ -665,8 +699,8 @@ if __name__ == "__main__":
 					closest_centroid = centroid
 		cluster_points[closest_centroid].append(noise_point)
 
-
-	create_validation_dict(clase_pcte, cluster_points, intermediary_centroids)
+	# create_validation_dict(clase_points, cluster_points, intermediary_centroids)
+	evaluate_cluster(clase_points, cluster_points)
 	#print(intermediary_centroids)
 	print("==============================")
 	#print(cluster_points)
