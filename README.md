@@ -1,4 +1,4 @@
-# MariaClus
+# MariaClust
 
 ### Validation results
 
