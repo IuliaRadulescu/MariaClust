@@ -3,11 +3,11 @@
 ### Validation results
 
 #### Jain
-python mariaClust.py jain.txt 2 3 0.8 2
-('Purity:  ', 0.0)
-('Entropy: ', 0.0)
-('RI       ', 1.0)
-('ARI      ', 1.0)
+* python mariaClust.py jain.txt 2 3 0.8 2
+	* ('Purity:  ', 0.0)
+	* ('Entropy: ', 0.0)
+	* ('RI       ', 1.0)
+	* ('ARI      ', 1.0)
 
 
 ### Run parameters:
