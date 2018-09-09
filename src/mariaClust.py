@@ -584,10 +584,12 @@ def evaluate_cluster(clase_points, cluster_points):
 			evaluation_dict[c][idx] = 0
 		idx += 1
 
-	
+
+	for point in point2class:		
+		if point2cluster.get(point, -1) == -1:
+			print("punct pierdut dupa clustering:", point)
 
 	for point in point2cluster:
-		# verific daca punctul initial exista in cluster
 		evaluation_dict[point2class[point]][point2cluster[point]] += 1
 			
 
