@@ -11,7 +11,7 @@
 	* 3 = single linkage
 	* 4 = average linkage ponderat
 
-Run example: python3 mariaClust.py aggregation.txt 7 8 1 1
+Run example: python src/mariaClust.py datasets/aggregation.txt 7 8 0.8 1
 
 -------------------------------------------------------------------------------------------------
 
@@ -26,7 +26,7 @@ Run example: python3 mariaClust.py aggregation.txt 7 8 1 1
 	* Expand Factor: 1 
 	* Dinstance Type: 1 (centroid)
 * run:
-	* python3 src/mariaClust.py datasets/aggregation.txt 7 8 1 1
+	* python src/mariaClust.py datasets/aggregation.txt 7 8 0.8 1
 * article:
 	* A. Gionis, H. Mannila, and P. Tsaparas, Clustering aggregation. ACM Transactions on Knowledge Discovery from Data (TKDD), 2007. 1(1): p. 1-30.
 
@@ -39,7 +39,7 @@ Run example: python3 mariaClust.py aggregation.txt 7 8 1 1
 	* Expand Factor: 1.8 
 	* Dinstance Type: 3 (single linkage)
 * run:
-	* python3 src/mariaClust.py datasets/spiral.txt 3 3 1.8 3
+	* python3 src/mariaClust.py datasets/spiral.txt 3 3 1 3
 * article:
 	* H. Chang and D.Y. Yeung, Robust path-based spectral clustering. Pattern Recognition, 2008. 41(1): p. 191-203. 
 
@@ -52,7 +52,7 @@ Run example: python3 mariaClust.py aggregation.txt 7 8 1 1
 	* Expand Factor: 1
 	* Dinstance Type: 1 (centroid)
 * run:
-	* python3 src/mariaClust.py datasets/r15.txt 15 8 1 1
+	* python src/mariaClust.py datasets/r15.txt 15 8 0.5 1
 * article:
 	* C.J. Veenman, M.J.T. Reinders, and E. Backer, A maximum variance cluster algorithm. IEEE Trans. Pattern Analysis and Machine Intelligence, 2002. 24(9): p. 1273-1280. 
 
@@ -65,7 +65,7 @@ Run example: python3 mariaClust.py aggregation.txt 7 8 1 1
 	* Expand Factor: 0.8
 	* Dinstance Type: 2 (average linkage)
 * run:
-	* python3 src/mariaClust.py datasets/jain.txt 2 3 0.8 2
+	* python3 src/mariaClust.py datasets/jain.txt 2 3 1 2
 * article:
 	* A. Jain and M. Law, Data clustering: A user's dilemma. Lecture Notes in Computer Science, 2005. 3776: p. 1-10. 
 
@@ -78,7 +78,7 @@ Run example: python3 mariaClust.py aggregation.txt 7 8 1 1
 	* Expand Factor: 1.8
 	* Dinstance Type: 2 (average linkage)
 * run:
-	* python3 src/mariaClust.py datasets/pathbased.txt 3 2 1.8 2
+	* python src/mariaClust.py datasets/pathbased.txt 3 2 0.73 2 
 * article:
 	* H. Chang and D.Y. Yeung, Robust path-based spectral clustering. Pattern Recognition, 2008. 41(1): p. 191-203. 
 
@@ -103,6 +103,9 @@ Run example: python3 mariaClust.py aggregation.txt 7 8 1 1
 	* No. Elements: 399
 	* No. Dimensions: 6
 	* No. Clusters: 2
+* run:
+	* python src/mariaClust.py datasets/compound.txt 6 3 1 3
 * article:
 	* C.T. Zahn, Graph-theoretical methods for detecting and describing gestalt clusters. IEEE Transactions on Computers, 1971. 100(1): p. 68-86. 
+
 
