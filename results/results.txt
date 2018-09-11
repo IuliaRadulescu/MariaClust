@@ -1,21 +1,48 @@
+python src/mariaClust.py datasets/aggregation.txt 7 8 0.8 1 #cu modificarea adusa pe 11.09.2018
+('Purity:  ', 0.99492385786802018)
+('Entropy: ', 0.011107599359548468)
+('RI       ', 0.99705880455885298)
+('ARI      ', 0.99132680602141798)
 
-python mariaClust.py jain.txt 2 3 1 2
+python src/mariaClust.py datasets/r15.txt 15 8 0.5 1 #cu modificarea adusa pe 11.09.2018
+('Purity:  ', 0.98999999999999988)
+('Entropy: ', 0.015684012562934488)
+('RI       ', 0.99739565943238728)
+('ARI      ', 0.97861734465515993)
+
+
+python src/mariaClust.py datasets/pathbased.txt 3 2 0.73 2 #cu modificarea adusa pe 11.09.2018
+('Purity:  ', 0.98996655518394649)
+('Entropy: ', 0.046766981878216374)
+('RI       ', 0.98713833583982402)
+('ARI      ', 0.97105361920187216)
+
+
+python src/mariaClust.py datasets/compound.txt 6 3 1 3 #cu modificarea adusa pe 11.09.2018
+('Purity:  ', 0.89223057644110271)
+('Entropy: ', 0.11445223510987002)
+('RI       ', 0.96678883137491967)
+('ARI      ', 0.91126960823834369)
+
+python mariaClust.py jain.txt 2 3 1 2 #ramane neschimbat 
 ('Purity:  ', 1.0)
 ('Entropy: ', 0.0)
 ('RI       ', 1.0)
 ('ARI      ', 1.0)
+
+python mariaClust.py spiral.txt 3 3 1 3 #ramane neschimbat 
+('Purity:  ', 1.0)
+('Entropy: ', 0.0)
+('RI       ', 1.0)
+('ARI      ', 1.0)
+
+REZULTATE ANTERIOARE
 
 python mariaClust.py Aggregation.txt 7 8 1 1
 ('Purity:  ', 0.99111675126903553)
 ('Entropy: ', 0.017897753851319601)
 ('RI       ', 0.99411760911770586)
 ('ARI      ', 0.98258714205936204)
-
-python mariaClust.py spiral.txt 3 3 1.8 3
-('Purity:  ', 1.0)
-('Entropy: ', 0.0)
-('RI       ', 1.0)
-('ARI      ', 1.0)
 
 python mariaClust.py R15.txt 15 8 1 1
 ('Purity:  ', 0.98166666666666658)

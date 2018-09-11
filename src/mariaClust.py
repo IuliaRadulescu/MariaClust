@@ -213,24 +213,31 @@ def get_closest_mean(dataset_k):
 	Media distantelor celor mai apropiati k vecini pentru fiecare punct in parte
 
 	'''
-	k=3
+	just_pdfs = [point[3] for point in dataset_k]
+	just_pdfs = list(set(just_pdfs))
+
+	mean_pdf = sum(just_pdfs)/len(just_pdfs)
+
+	k=int(math.ceil(0.1*len(dataset_k)))
 	distances = list()
 	for point in dataset_k:
 		deja_parsati = list()
-		while(k>0):
-			neigh_id = 0
-			minDist = 99999
-			for id_point_k in range(len(dataset_k)):
-				point_k = dataset_k[id_point_k]
-				if(point_k not in deja_parsati):
-					dist = DistFunc(point, point_k)
-					if(dist < minDist and dist > 0):
-						minDist = dist
-						neigh_id = id_point_k
-			distances.append(minDist)
-			neigh = dataset_k[neigh_id]
-			deja_parsati.append(neigh)
-			k=k-1
+		if(point[3] > mean_pdf):
+			while(k>0):
+				neigh_id = 0
+				minDist = 99999
+				for id_point_k in range(len(dataset_k)):
+					point_k = dataset_k[id_point_k]
+					if(point_k not in deja_parsati):
+						dist = DistFunc(point, point_k)
+						if(dist < minDist and dist > 0):
+							minDist = dist
+							neigh_id = id_point_k
+				distances.append(minDist)
+				neigh = dataset_k[neigh_id]
+				deja_parsati.append(neigh)
+				k=k-1
+	distances = list(set(distances))
 	return sum(distances)/len(distances)
 
 def get_closestk_neigh(point, dataset_k, id_point, expand_factor):
@@ -286,13 +293,16 @@ def expand_knn(point_id, expand_factor):
 	point = pixels_partition_clusters[point_id]
 	neigh_ids = get_closestk_neigh(point, pixels_partition_clusters, point_id, expand_factor)
 	clusters[id_cluster].append(point)
-	pixels_partition_clusters[point_id][2] = id_cluster
-	pixels_partition_clusters[point_id][4] = 1
 	if(len(neigh_ids)>0):
+		pixels_partition_clusters[point_id][2] = id_cluster
+		pixels_partition_clusters[point_id][4] = 1
 		for neigh_id in neigh_ids:
 			
 			if(pixels_partition_clusters[neigh_id][4]==-1):
 				expand_knn(neigh_id, expand_factor)
+	else:
+		pixels_partition_clusters[point_id][2] = -1
+		pixels_partition_clusters[point_id][4] = 1
 		
 
 def calculate_weighted_average_pairwise(cluster1, cluster2):
@@ -598,9 +608,7 @@ if __name__ == "__main__":
 	'''
 	
 	final_partitions, noise = split_partitions(partition_dict, expand_factor) #functie care scindeaza partitiile
-	print("len noise "+str(len(noise)))
-	#print partititons
-
+	
 	for k in final_partitions:
 		color = random_color_scaled()
 		for pixel in final_partitions[k]:
@@ -611,7 +619,7 @@ if __name__ == "__main__":
 
 	intermediary_centroids, cluster_points = agglomerative_clustering2(final_partitions, no_clusters, cluster_distance) #paramateri: partitiile rezultate, numarul de clustere
 	
-
+	print(intermediary_centroids)
 	#reasignez zgomotul clasei cu cel mai apropiat vecin
 
 	for noise_point in noise:
