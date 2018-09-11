@@ -256,49 +256,20 @@ def get_closestk_neigh(point, dataset_k, id_point, expand_factor):
 				if(dist < minDist and dist > 0):
 					minDist = dist
 					neigh_id = id_point_k
-		if(len(distances)>1):
-			if(minDist <= expand_factor*closest_mean):
-				neigh = dataset_k[neigh_id]
-				neigh_ids.append([neigh_id, neigh])
-				distances.append(minDist)
-				
-				deja_parsati.append(neigh)
-			else:
-				pot_continua = 0
-				
-		else:
-			if(len(distances)>0 and minDist <= expand_factor*closest_mean):
-				neigh = dataset_k[neigh_id]
-				neigh_ids.append([neigh_id, neigh])
-				distances.append(minDist)
-				
-				deja_parsati.append(neigh)
-			elif(len(distances)==0):
-				neigh = dataset_k[neigh_id]
-				neigh_ids.append([neigh_id, neigh])
-				distances.append(minDist)
-				
-				deja_parsati.append(neigh)
-			else:
-				pot_continua = 0
-				
+		
 
+		if(minDist <= expand_factor*closest_mean):
+			neigh = dataset_k[neigh_id]
+			neigh_ids.append([neigh_id, neigh])
+			distances.append(minDist)
+			
+			deja_parsati.append(neigh)
+		else:
+			pot_continua = 0
+		
 	neigh_ids.sort(key=lambda x: x[1])
 
 	neigh_ids_final = [n_id[0] for n_id in neigh_ids]
-
-	'''for pixel_id in range(len(dataset_k)):
-		pixel = dataset_k[pixel_id]
-		if(pixel_id in neigh_ids_final):
-			plt.scatter(pixel[0], pixel[1], color="r")
-		else:
-			plt.scatter(pixel[0], pixel[1], color="g")
-
-		plt.annotate(str(pixel[2])+" -- "+str(pixel[5]), (pixel[0], pixel[1]))
-
-	plt.scatter(point[0], point[1], color="b")
-	plt.annotate(str(point[2])+" -- "+str(point[5]), (point[0], point[1]))
-	plt.show()'''
 
 	return neigh_ids_final
 
@@ -314,14 +285,14 @@ def expand_knn(point_id, expand_factor):
 	global id_cluster, clusters, pixels_partition_clusters
 	point = pixels_partition_clusters[point_id]
 	neigh_ids = get_closestk_neigh(point, pixels_partition_clusters, point_id, expand_factor)
-	
 	clusters[id_cluster].append(point)
 	pixels_partition_clusters[point_id][2] = id_cluster
 	pixels_partition_clusters[point_id][4] = 1
-	for neigh_id in neigh_ids:
-		
-		if(pixels_partition_clusters[neigh_id][4]==-1):
-			expand_knn(neigh_id, expand_factor)
+	if(len(neigh_ids)>0):
+		for neigh_id in neigh_ids:
+			
+			if(pixels_partition_clusters[neigh_id][4]==-1):
+				expand_knn(neigh_id, expand_factor)
 		
 
 def calculate_weighted_average_pairwise(cluster1, cluster2):
@@ -408,10 +379,6 @@ def split_partitions(partition_dict, expand_factor):
 		pixels_partition_anchors = list()
 		just_points = list()
 		
-		'''pdf_partition = compute_pdf_kde(pixels_partition, x_partition, y_partition)
-		for pixel_id in range(len(pixels_partition)):
-			pixels_partition_anchors.append([pixels_partition[pixel_id][0], pixels_partition[pixel_id][1], -1, pdf_partition[pixel_id]])'''
-
 		for pixel in pixels_partition:
 			pixels_partition_clusters.append([pixel[0], pixel[1], -1, pdf[pixel[2]], -1, pixel[2], pixel[4]]) #id cluster, pdf de idx_point, deja_parsat, id_point si clasa din care face parte pctul
 			just_points.append([pixel[0], pixel[1]])
@@ -431,7 +398,7 @@ def split_partitions(partition_dict, expand_factor):
 						pixels_partition_clusters[neigh_id][4]=1
 						pixels_partition_clusters[neigh_id][2]=id_cluster
 						expand_knn(neigh_id, expand_factor)
-					#print("----sfarsit_expandare")
+					
 				
 		
 		colors = list()
@@ -442,28 +409,6 @@ def split_partitions(partition_dict, expand_factor):
 		#si pentru minus 1
 		color = random_color_scaled()
 		colors.append(color)
-
-		#print(colors)
-
-		
-		'''
-		#PLOTARE PARTITII INTERMEDIARE
-		ax = plt.gca()
-		ax.cla() # clear things for fresh plot
-		f_partition, xmin, xmax, ymin, ymax, xx_partition, yy_partition = evaluate_pdf_kde(pixels_partition, x_partition, y_partition)
-		plt.contourf(xx_partition, yy_partition, f_partition, cmap='Blues')
-		for pixel in pixels_partition_clusters:
-			#circle = plt.Circle((pixel[0], pixel[1]), eps, color='b', fill=False)
-			if(pixel[2]==-1):
-				plt.scatter(pixel[0], pixel[1], color=colors[len(colors)-1])
-			else:
-				plt.scatter(pixel[0], pixel[1], color=colors[pixel[2]])
-			#ax.add_artist(circle)
-
-
-
-		plt.show()
-		'''
 
 		inner_partitions = collections.defaultdict(list)
 		inner_partitions_filtered = collections.defaultdict(list)
@@ -540,27 +485,6 @@ def create_validation_dict(clase_points, cluster_points, intermediary_centroids)
 		tuplu_pcte_in_clasa = tuple(point for point in clase_points[clasa_pct])
 		evaluation_dict[clasa_pct] = clusters_dict
 
-	'''
-	#Pentru evaluare
-	with open('results.txt', 'a') as the_file:
-		the_file.write("FORMAT PENTRU EVALUARE "+str(evaluation_dict)+"\n")
-		the_file.write("DETALII =============\n\n")
-		id_clasa_pct=0
-		for classofpoints in evaluation_dict:
-			the_file.write("PCTELE DIN CLASA "+str(id_clasa_pct)+" SUNT IMPARTITE IN CELE 2 CLUSTERE ASTFEL\n\n")
-			for points_in_cluster in evaluation_dict[classofpoints]:
-				the_file.write(str(points_in_cluster))
-				the_file.write("\n\n")
-			id_clasa_pct=id_clasa_pct + 1
-		the_file.write("NR PCTE FIECARE =============\n\n")
-		id_clasa_pct=0
-		for classofpoints in evaluation_dict:
-			the_file.write("NR PCTE DIN CLASA "+str(id_clasa_pct)+" SUNT IMPARTITE IN CELE 2 CLUSTERE ASTFEL\n\n")
-			for points_in_cluster in evaluation_dict[classofpoints]:
-				the_file.write(str(evaluation_dict[classofpoints][points_in_cluster]))
-				the_file.write("\n\n")
-			id_clasa_pct=id_clasa_pct + 1
-	'''
 	print(evaluation_dict)
 	return evaluation_dict
 
