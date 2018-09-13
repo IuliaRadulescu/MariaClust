@@ -11,7 +11,14 @@
 	* 3 = single linkage
 	* 4 = average linkage ponderat
 
-Run example: python src/mariaClust.py datasets/aggregation.txt 7 8 0.8 1
+Run examples: 
+* python src/mariaClust.py datasets/aggregation.txt 7 8 0.8 1
+* python src/mariaClust.py datasets/spiral.txt 3 3 1 3
+* python src/mariaClust.py datasets/r15.txt 15 8 0.5 1
+* python src/mariaClust.py datasets/jain.txt 2 3 1 2
+* python src/mariaClust.py datasets/pathbased.txt 3 2 0.73 2
+* python src/mariaClust.py datasets/flame.txt 2 2 1 3 
+* python src/mariaClust.py datasets/compound.txt 6 3 1 3
 
 -------------------------------------------------------------------------------------------------
 
@@ -23,7 +30,7 @@ Run example: python src/mariaClust.py datasets/aggregation.txt 7 8 0.8 1
 	* No. Dimensions: 2
 	* No. Clusters: 7
 	* No. Bins: 8
-	* Expand Factor: 1 
+	* Expand Factor: 0.8 
 	* Dinstance Type: 1 (centroid)
 * run:
 	* python src/mariaClust.py datasets/aggregation.txt 7 8 0.8 1
@@ -36,10 +43,10 @@ Run example: python src/mariaClust.py datasets/aggregation.txt 7 8 0.8 1
 	* No. Dimensions: 2
 	* No. Clusters: 3
 	* No. Bins: 3
-	* Expand Factor: 1.8 
+	* Expand Factor: 1
 	* Dinstance Type: 3 (single linkage)
 * run:
-	* python3 src/mariaClust.py datasets/spiral.txt 3 3 1 3
+	* python src/mariaClust.py datasets/spiral.txt 3 3 1 3
 * article:
 	* H. Chang and D.Y. Yeung, Robust path-based spectral clustering. Pattern Recognition, 2008. 41(1): p. 191-203. 
 
@@ -49,7 +56,7 @@ Run example: python src/mariaClust.py datasets/aggregation.txt 7 8 0.8 1
 	* No. Dimensions: 2
 	* No. Clusters: 15
 	* No. Bins: 8
-	* Expand Factor: 1
+	* Expand Factor: 0.5
 	* Dinstance Type: 1 (centroid)
 * run:
 	* python src/mariaClust.py datasets/r15.txt 15 8 0.5 1
@@ -62,10 +69,10 @@ Run example: python src/mariaClust.py datasets/aggregation.txt 7 8 0.8 1
 	* No. Dimensions: 2
 	* No. Clusters: 2
 	* No. Bins: 3
-	* Expand Factor: 0.8
+	* Expand Factor: 1
 	* Dinstance Type: 2 (average linkage)
 * run:
-	* python3 src/mariaClust.py datasets/jain.txt 2 3 1 2
+	* python src/mariaClust.py datasets/jain.txt 2 3 1 2
 * article:
 	* A. Jain and M. Law, Data clustering: A user's dilemma. Lecture Notes in Computer Science, 2005. 3776: p. 1-10. 
 
@@ -75,10 +82,10 @@ Run example: python src/mariaClust.py datasets/aggregation.txt 7 8 0.8 1
 	* No. Dimensions: 2
 	* No. Clusters: 3
 	* No. Bins: 2
-	* Expand Factor: 1.8
+	* Expand Factor: 0.73
 	* Dinstance Type: 2 (average linkage)
 * run:
-	* python src/mariaClust.py datasets/pathbased.txt 3 2 0.73 2 
+	* python src/mariaClust.py datasets/pathbased.txt 3 2 0.73 2
 * article:
 	* H. Chang and D.Y. Yeung, Robust path-based spectral clustering. Pattern Recognition, 2008. 41(1): p. 191-203. 
 
@@ -87,8 +94,26 @@ Run example: python src/mariaClust.py datasets/aggregation.txt 7 8 0.8 1
 	* No. Elements: 240
 	* No. Dimensions: 2
 	* No. Clusters: 2
+	* No. Bins: 2
+	* Expand Factor: 1
+	* Dinstance Type: 3 (single linkage)
+* run
+	* python src/mariaClust.py datasets/flame.txt 2 2 1 3 	
 * article:
 	* L. Fu and E. Medico, FLAME, a novel fuzzy clustering method for the analysis of DNA microarray data. BMC bioinformatics, 2007. 8(1): p. 3. 
+
+### Compound
+* Compound details:
+	* No. Elements: 399
+	* No. Dimensions: 6
+	* No. Clusters: 2
+	* No. Bins: 3
+	* Expand Factor: 1
+	* Dinstance Type: 3 (single linkage)
+* run:
+	* python src/mariaClust.py datasets/compound.txt 6 3 1 3
+* article:
+	* C.T. Zahn, Graph-theoretical methods for detecting and describing gestalt clusters. IEEE Transactions on Computers, 1971. 100(1): p. 68-86. 
 
 ### D31
 * D31 details:
@@ -97,15 +122,4 @@ Run example: python src/mariaClust.py datasets/aggregation.txt 7 8 0.8 1
 	* No. Clusters: 31
 * article:
 	* C.J. Veenman, M.J.T. Reinders, and E. Backer, A maximum variance cluster algorithm. IEEE Trans. Pattern Analysis and Machine Intelligence 2002. 24(9): p. 1273-1280. 
-
-### Compound
-* Compound details:
-	* No. Elements: 399
-	* No. Dimensions: 6
-	* No. Clusters: 2
-* run:
-	* python src/mariaClust.py datasets/compound.txt 6 3 1 3
-* article:
-	* C.T. Zahn, Graph-theoretical methods for detecting and describing gestalt clusters. IEEE Transactions on Computers, 1971. 100(1): p. 68-86. 
-
 
