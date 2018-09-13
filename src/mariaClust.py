@@ -160,6 +160,10 @@ def evaluate_pdf_kde(dataset_xy, x, y):
 	positions = np.vstack([xx.ravel(), yy.ravel()])
 	values = np.vstack([x, y])
 	kernel = st.gaussian_kde(values) #bw_method=
+
+	scott_fact = kernel.scotts_factor()
+	print("who is scott eval? "+str(scott_fact))
+
 	f = np.reshape(kernel(positions).T, xx.shape)
 	return (f,xmin, xmax, ymin, ymax, xx, yy)
 
@@ -571,16 +575,34 @@ if __name__ == "__main__":
 		clase_points[int(aux[2])].append((float(aux[0]), float(aux[1])))
 
 	pdf = compute_pdf_kde(dataset_xy, x, y) #calculez functia densitate probabilitate utilizand kde
-	f,xmin, xmax, ymin, ymax, xx, yy = evaluate_pdf_kde(dataset_xy, x, y) #pentru afisare zone dense albastre
-	plt.contourf(xx, yy, f, cmap='Blues') #pentru afisare zone dense albastre
 
 	#detectie si eliminare outlieri
 
 	outliers_iqr_pdf = outliers_iqr(pdf)
 	print(outliers_iqr_pdf)
 
-	dataset_xy = [dataset_xy[i] for i in range(len(dataset_xy)) if i not in outliers_iqr_pdf]
+	dataset_xy_aux = list()
+	x_aux = list()
+	y_aux = list()
 
+	#eliminare outlieri, refac dataset_xy, x si y
+
+	for q in range(len(dataset_xy)):
+		if(q not in outliers_iqr_pdf):
+			dataset_xy_aux.append(dataset_xy[q])
+			x_aux.append(dataset_xy[q][0])
+			y_aux.append(dataset_xy[q][1])
+
+	dataset_xy = dataset_xy_aux
+	x = x_aux
+	y = y_aux
+
+	#recalculez pdf, ca altfel se produc erori
+
+	pdf = compute_pdf_kde(dataset_xy, x, y) #calculez functia densitate probabilitate din nou
+	f,xmin, xmax, ymin, ymax, xx, yy = evaluate_pdf_kde(dataset_xy, x, y) #pentru afisare zone dense albastre
+	plt.contourf(xx, yy, f, cmap='Blues') #pentru afisare zone dense albastre
+		
 	partition_dict = collections.defaultdict(list)
 	
 	'''
