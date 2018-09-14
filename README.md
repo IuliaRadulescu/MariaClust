@@ -19,6 +19,7 @@ Run examples:
 * python src/mariaClust.py datasets/pathbased.txt 3 2 0.73 2
 * python src/mariaClust.py datasets/flame.txt 2 2 1 3 
 * python src/mariaClust.py datasets/compound.txt 6 3 1 3
+* python src/mariaClust.py datasets/d31.txt 31 7 0.1 1
 
 -------------------------------------------------------------------------------------------------
 
@@ -98,7 +99,7 @@ Run examples:
 	* Expand Factor: 1
 	* Dinstance Type: 3 (single linkage)
 * run
-	* python src/mariaClust.py datasets/flame.txt 2 2 1 3 	
+	* python src/mariaClust.py datasets/flame.txt 2 2 1 3
 * article:
 	* L. Fu and E. Medico, FLAME, a novel fuzzy clustering method for the analysis of DNA microarray data. BMC bioinformatics, 2007. 8(1): p. 3. 
 
@@ -120,6 +121,10 @@ Run examples:
 	* No. Elements: 3100
 	* No. Dimensions: 2
 	* No. Clusters: 31
+	* No. Bins: 7
+	* Expand Factor: 0.1
+	* Dinstance Type: 1 (centroid)	
+*run:
+	* python src/mariaClust.py datasets/d31.txt 31 7 0.1 1
 * article:
-	* C.J. Veenman, M.J.T. Reinders, and E. Backer, A maximum variance cluster algorithm. IEEE Trans. Pattern Analysis and Machine Intelligence 2002. 24(9): p. 1273-1280. 
-
+	* C.J. Veenman, M.J.T. Reinders, and E. Backer, A maximum variance cluster algorithm. IEEE Trans. Pattern Analysis and Machine Intelligence 2002. 24(9): p. 1273-1280.
