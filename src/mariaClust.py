@@ -208,15 +208,15 @@ def random_color_scaled():
 	return [round(b/255,2), round(g/255,2), round(r/255,2)]
 
 #Distanta Euclidiana dintre doua puncte 2d
-def DistFunc(x, y, no_dims=2):
-
+def DistFunc(x, y):
+	global no_dims
 	sum_powers = 0
 	for dim in range(no_dims):
 		sum_powers = math.pow(x[dim]-y[dim], 2) + sum_powers
 	return math.sqrt(sum_powers)
 
-def centroid(pixels, no_dims=2):
-	
+def centroid(pixels):
+	global no_dims
 	sum_each_dim = {}
 	for dim in range(no_dims):
 		sum_each_dim[dim] = 0
