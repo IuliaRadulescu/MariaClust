@@ -611,7 +611,7 @@ if __name__ == "__main__":
 	outliers_iqr_pdf = outliers_iqr(pdf)
 	print("Am identificat urmatorii outlieri: ")
 	for outlier_id in outliers_iqr_pdf:
-		print(dataset_xy[outliers_id])
+		print(dataset_xy[outlier_id])
 	print("======================================")
 
 	dataset_xy_aux = list()
