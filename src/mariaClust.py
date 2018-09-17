@@ -25,6 +25,8 @@ def agglomerative_clustering2(partitions, final_no_clusters, cluster_distance):
 	Identificatorii partitiilor sunt pastrati in lista intermediary_centroids, iar clusterele cu punctele asociate sunt pastrate in dictionarul cluster_points.
 	cluster_points => cheile sunt identificatorii partitiilor (centroizii lor), iar valorile sunt punctele asociate
 	Criteriul de unire a doua clustere variaza'''
+	global no_dims
+
 	no_agg_clusters = len(partitions)
 	intermediary_centroids = list()
 	#intermediary_centroids este de o lista cu identificatorii clusterelor
@@ -42,13 +44,19 @@ def agglomerative_clustering2(partitions, final_no_clusters, cluster_distance):
 
 	for k in partitions:
 		centroid_partition = centroid(partitions[k])
-		cluster_points[(centroid_partition[0], centroid_partition[1])] = []
+		idx_dict = list()
+		for dim in range(no_dims):
+			idx_dict.append(centroid_partition[dim])
+		cluster_points[tuple(idx_dict)] = []
 		intermediary_centroids.append(centroid_partition)
 	
 	for k in partitions:
 		centroid_partition = centroid(partitions[k])
+		idx_dict = list()
+		for dim in range(no_dims):
+			idx_dict.append(centroid_partition[dim])
 		for pixel in partitions[k]:
-			cluster_points[(centroid_partition[0], centroid_partition[1])].append(pixel)
+			cluster_points[tuple(idx_dict)].append(pixel)
 
 	#print cluster_points
 
@@ -61,21 +69,26 @@ def agglomerative_clustering2(partitions, final_no_clusters, cluster_distance):
 		mdw_uneste_b_idx = list()
 		for q in range(len(intermediary_centroids)):
 			for p in range(q+1, len(intermediary_centroids)):
-				
-				centroid_q = centroid(cluster_points[(intermediary_centroids[q][0], intermediary_centroids[q][1])])
-				centroid_p = centroid(cluster_points[(intermediary_centroids[p][0], intermediary_centroids[p][1])])
+				idx_dict_q = list()
+				idx_dict_p = list()
+				for dim in range(no_dims):
+					idx_dict_q.append(intermediary_centroids[q][dim])
+					idx_dict_p.append(intermediary_centroids[p][dim])
+
+				centroid_q = centroid(cluster_points[tuple(idx_dict_q)])
+				centroid_p = centroid(cluster_points[tuple(idx_dict_p)])
 				if(centroid_q!=centroid_p):
 					# calculate_smallest_pairwise pentru jain si spiral
 					if(cluster_distance==1):
-						dist = calculate_centroid(cluster_points[(intermediary_centroids[q][0], intermediary_centroids[q][1])], cluster_points[(intermediary_centroids[p][0], intermediary_centroids[p][1])])					
+						dist = calculate_centroid(cluster_points[tuple(idx_dict_q)], cluster_points[tuple(idx_dict_p)])					
 					elif(cluster_distance==2):
-						dist = calculate_average_pairwise(cluster_points[(intermediary_centroids[q][0], intermediary_centroids[q][1])], cluster_points[(intermediary_centroids[p][0], intermediary_centroids[p][1])])
+						dist = calculate_average_pairwise(cluster_points[tuple(idx_dict_q)], cluster_points[tuple(idx_dict_p)])
 					elif(cluster_distance==3):
-						dist = calculate_smallest_pairwise(cluster_points[(intermediary_centroids[q][0], intermediary_centroids[q][1])], cluster_points[(intermediary_centroids[p][0], intermediary_centroids[p][1])])
+						dist = calculate_smallest_pairwise(cluster_points[tuple(idx_dict_q)], cluster_points[tuple(idx_dict_p)])
 					elif(cluster_distance==4):
-						dist = calculate_weighted_average_pairwise(cluster_points[(intermediary_centroids[q][0], intermediary_centroids[q][1])], cluster_points[(intermediary_centroids[p][0], intermediary_centroids[p][1])])
+						dist = calculate_weighted_average_pairwise(cluster_points[tuple(idx_dict_q)], cluster_points[tuple(idx_dict_p)])
 					else:
-						dist = calculate_centroid(cluster_points[(intermediary_centroids[q][0], intermediary_centroids[q][1])], cluster_points[(intermediary_centroids[p][0], intermediary_centroids[p][1])])
+						dist = calculate_centroid(cluster_points[tuple(idx_dict_q)], cluster_points[tuple(idx_dict_p)])
 				
 				if(dist<minDist):
 					minDist = dist
@@ -84,30 +97,40 @@ def agglomerative_clustering2(partitions, final_no_clusters, cluster_distance):
 					
 		helperCluster = list()
 
-		for cluster_point in cluster_points[(intermediary_centroids[uneste_a_idx][0], intermediary_centroids[uneste_a_idx][1])]:
+		idx_uneste_a = list()
+		idx_uneste_b = list()
+
+		for dim in range(no_dims):
+			idx_uneste_a.append(intermediary_centroids[uneste_a_idx][dim])
+			idx_uneste_b.append(intermediary_centroids[uneste_b_idx][dim])
+
+		for cluster_point in cluster_points[tuple(idx_uneste_a)]:
 			helperCluster.append(cluster_point)
 		
-		for cluster_point in cluster_points[(intermediary_centroids[uneste_b_idx][0], intermediary_centroids[uneste_b_idx][1])]:
+		for cluster_point in cluster_points[tuple(idx_uneste_b)]:
 			helperCluster.append(cluster_point)
 
 		
 		newCluster = centroid(helperCluster)
 
 		
-		del cluster_points[(intermediary_centroids[uneste_a_idx][0], intermediary_centroids[uneste_a_idx][1])]
-		del cluster_points[(intermediary_centroids[uneste_b_idx][0], intermediary_centroids[uneste_b_idx][1])]
+		del cluster_points[tuple(idx_uneste_a)]
+		del cluster_points[tuple(idx_uneste_b)]
 
-		
-		cluster_points[(newCluster[0], newCluster[1])] = []
+		idx_cluster = list()
+		for dim in range(no_dims):
+			idx_cluster.append(newCluster[dim])
+
+		cluster_points[tuple(idx_cluster)] = []
 		for pointHelper in helperCluster:
-			cluster_points[(newCluster[0], newCluster[1])].append(pointHelper)
+			cluster_points[tuple(idx_cluster)].append(pointHelper)
 
 		
 		value_a = intermediary_centroids[uneste_a_idx]
 		value_b = intermediary_centroids[uneste_b_idx]
 
 
-		for cluster_point in cluster_points[(newCluster[0], newCluster[1])]:
+		for cluster_point in cluster_points[tuple(idx_cluster)]:
 			if(cluster_point in intermediary_centroids):
 				intermediary_centroids = list(filter(lambda a: a != cluster_point, intermediary_centroids))
 		
@@ -130,12 +153,15 @@ def agglomerative_clustering2(partitions, final_no_clusters, cluster_distance):
 
 	return intermediary_centroids, cluster_points
 
-def compute_pdf_kde(dataset_xy, x, y):
+def compute_pdf_kde(dataset_xy, each_dimension_values):
 	'''
 	Calculeaza functia probabilitate de densitate si intoarce valorile ei pentru
 	punctele din dataset_xy
 	'''
-	values = np.vstack([x, y])
+	stacking_list = list()
+	for dim_id in each_dimension_values:
+		stacking_list.append(each_dimension_values[dim_id])
+	values = np.vstack(stacking_list)
 	kernel = st.gaussian_kde(values) #bw_method=
 	pdf = kernel.evaluate(values)
 
@@ -144,11 +170,18 @@ def compute_pdf_kde(dataset_xy, x, y):
 	return pdf
 
 
-def evaluate_pdf_kde(dataset_xy, x, y):
+def evaluate_pdf_kde(dataset_xy, each_dimension_values):
 	'''
+	Functioneaza doar pentru doua dimensiuni
 	Genereaza graficul in nuante de albastru pentru functia probabilitate de densitate
 	calculata pentru dataset_xy
 	'''
+	x = list()
+	y = list()
+
+	x = each_dimension_values[0]
+	y = each_dimension_values[1]
+
 	xmin = min(x)-2
 	xmax = max(x)+2
 
@@ -175,25 +208,30 @@ def random_color_scaled():
 	return [round(b/255,2), round(g/255,2), round(r/255,2)]
 
 #Distanta Euclidiana dintre doua puncte 2d
-def DistFunc(x, y, printF=2):
-	sum_powers = math.pow(x[0]-y[0], 2) + math.pow(x[1]-y[1], 2)
+def DistFunc(x, y, no_dims=2):
+
+	sum_powers = 0
+	for dim in range(no_dims):
+		sum_powers = math.pow(x[dim]-y[dim], 2) + sum_powers
 	return math.sqrt(sum_powers)
 
-def centroid(pixels):
+def centroid(pixels, no_dims=2):
 	
-	sum_red = 0;
-	sum_green = 0;
+	sum_each_dim = {}
+	for dim in range(no_dims):
+		sum_each_dim[dim] = 0
 
 	for pixel in pixels:
-		
-		sum_red = sum_red + pixel[0]
-		sum_green = sum_green + pixel[1]
-		
+		for dim in range(no_dims):
+			sum_each_dim[dim] = sum_each_dim[dim] + pixel[dim]
+	
+	centroid_coords = list()
+	for sum_id in sum_each_dim:
+		centroid_coords.append(round(sum_each_dim[sum_id]/len(pixels), 2))
 
-	red = round(sum_red/len(pixels),2)
-	green = round(sum_green/len(pixels),2)
+	centroid_coords = tuple(centroid_coords)
 
-	return (red, green)
+	return centroid_coords
 
 	
 def outliers_iqr(ys):
@@ -217,7 +255,9 @@ def get_closest_mean(dataset_k):
 	Media distantelor celor mai apropiati k vecini pentru fiecare punct in parte
 
 	'''
-	just_pdfs = [point[3] for point in dataset_k]
+	global no_dims
+
+	just_pdfs = [point[no_dims+1] for point in dataset_k]
 	just_pdfs = list(set(just_pdfs))
 
 	mean_pdf = sum(just_pdfs)/len(just_pdfs)
@@ -226,7 +266,7 @@ def get_closest_mean(dataset_k):
 	distances = list()
 	for point in dataset_k:
 		deja_parsati = list()
-		if(point[3] > mean_pdf):
+		if(point[no_dims+1] > mean_pdf):
 			while(k>0):
 				neigh_id = 0
 				minDist = 99999
@@ -293,20 +333,20 @@ def expand_knn(point_id, expand_factor):
 	Iau cei mai apropiati v vecini ai celor v vecini
 	Cand toate punctele sunt parcurse (toti vecinii au fost parcursi) ma opresc si incep cluster nou
 	'''
-	global id_cluster, clusters, pixels_partition_clusters
+	global id_cluster, clusters, pixels_partition_clusters, no_dims
 	point = pixels_partition_clusters[point_id]
 	neigh_ids = get_closestk_neigh(point, pixels_partition_clusters, point_id, expand_factor)
 	clusters[id_cluster].append(point)
 	if(len(neigh_ids)>0):
-		pixels_partition_clusters[point_id][2] = id_cluster
-		pixels_partition_clusters[point_id][4] = 1
+		pixels_partition_clusters[point_id][no_dims] = id_cluster
+		pixels_partition_clusters[point_id][no_dims+2] = 1
 		for neigh_id in neigh_ids:
 			
-			if(pixels_partition_clusters[neigh_id][4]==-1):
+			if(pixels_partition_clusters[neigh_id][no_dims+2]==-1):
 				expand_knn(neigh_id, expand_factor)
 	else:
-		pixels_partition_clusters[point_id][2] = -1
-		pixels_partition_clusters[point_id][4] = 1
+		pixels_partition_clusters[point_id][no_dims] = -1
+		pixels_partition_clusters[point_id][no_dims+2] = 1
 		
 
 def calculate_weighted_average_pairwise(cluster1, cluster2):
@@ -325,8 +365,8 @@ def calculate_weighted_average_pairwise(cluster1, cluster2):
 		for pixel2 in cluster2:
 			distBetween = DistFunc(pixel1, pixel2)
 			
-			sum_pairwise = sum_pairwise + abs(pixel1[3]-pixel2[3])*distBetween
-			sum_ponderi = sum_ponderi + abs(pixel1[3]-pixel2[3])
+			sum_pairwise = sum_pairwise + abs(pixel1[no_dims+1]-pixel2[no_dims+1])*distBetween
+			sum_ponderi = sum_ponderi + abs(pixel1[no_dims+1]-pixel2[no_dims+1])
 
 	average_pairwise = sum_pairwise/sum_ponderi
 	return average_pairwise
@@ -368,7 +408,7 @@ def calculate_centroid(cluster1, cluster2):
 	return dist
 
 def split_partitions(partition_dict, expand_factor):
-	global id_cluster, clusters, pixels_partition_clusters,pdf
+	global id_cluster, clusters, pixels_partition_clusters, pdf, no_dims
 
 	print(expand_factor)
 	noise = list()
@@ -379,62 +419,41 @@ def split_partitions(partition_dict, expand_factor):
 	for k in partition_dict:
 		pixels_partition = partition_dict[k]
 
-		x_partition = list()
-		y_partition = list()
-		color = random_color_scaled()
-		for point in pixels_partition:
-			x_partition.append(point[0])
-			y_partition.append(point[1])
-
 		clusters = collections.defaultdict(list)
 		id_cluster = -1
 
 		pixels_partition_clusters = list()
 		pixels_partition_anchors = list()
-		just_points = list()
-		
-		for pixel in pixels_partition:
-			pixels_partition_clusters.append([pixel[0], pixel[1], -1, pdf[pixel[2]], -1, pixel[2], pixel[4]]) #id cluster, pdf de idx_point, deja_parsat, id_point si clasa din care face parte pctul
-			just_points.append([pixel[0], pixel[1]])
+
+		pixels_partition_clusters = pixels_partition
 
 		for pixel_id in range(len(pixels_partition_clusters)):
 			pixel = pixels_partition_clusters[pixel_id]
-				
-			if(pixels_partition_clusters[pixel_id][2]==-1):
+			
+			if(pixels_partition_clusters[pixel_id][no_dims]==-1):
 				id_cluster = id_cluster + 1
-				pixels_partition_clusters[pixel_id][4] = 1
-				pixels_partition_clusters[pixel_id][2] = id_cluster
+				pixels_partition_clusters[pixel_id][no_dims+2] = 1
+				pixels_partition_clusters[pixel_id][no_dims] = id_cluster
 				clusters[id_cluster].append(pixel)
 				neigh_ids = get_closestk_neigh(pixel, pixels_partition_clusters, pixel_id, expand_factor)
 				
 				for neigh_id in neigh_ids:
-					if(pixels_partition_clusters[neigh_id][2]==-1):
-						pixels_partition_clusters[neigh_id][4]=1
-						pixels_partition_clusters[neigh_id][2]=id_cluster
+					if(pixels_partition_clusters[neigh_id][no_dims]==-1):
+						pixels_partition_clusters[neigh_id][no_dims+2]=1
+						pixels_partition_clusters[neigh_id][no_dims]=id_cluster
 						expand_knn(neigh_id, expand_factor)
 					
-				
-		
-		colors = list()
-		for i in range(len(clusters)):
-			color = random_color_scaled()
-			colors.append(color)
-
-		#si pentru minus 1
-		color = random_color_scaled()
-		colors.append(color)
-
 		inner_partitions = collections.defaultdict(list)
 		inner_partitions_filtered = collections.defaultdict(list)
 		part_id_inner = 0
 		for i in range(len(clusters)):
 			for pixel in pixels_partition_clusters:
-				if(pixel[2]==i):
+				if(pixel[no_dims]==i):
 					inner_partitions[part_id_inner].append(pixel)
 			part_id_inner = part_id_inner+1
 		#adaug si zgomotul
 		for pixel in pixels_partition_clusters:
-			if(pixel[2]==-1):
+			if(pixel[no_dims]==-1):
 				inner_partitions[part_id_inner].append(pixel)
 				part_id_inner = part_id_inner+1
 				
@@ -503,6 +522,8 @@ def create_validation_dict(clase_points, cluster_points, intermediary_centroids)
 	return evaluation_dict
 
 def evaluate_cluster(clase_points, cluster_points):
+	global no_dims
+
 	evaluation_dict = {}
 	point2cluster = {}
 	point2class = {}
@@ -517,12 +538,13 @@ def evaluate_cluster(clase_points, cluster_points):
 	idx = 0
 	for elem in cluster_points:
 		for point in cluster_points[elem]:
-			point2cluster[(point[0], point[1])] = idx
+			index_dict = list()
+			for dim in range(no_dims):
+				index_dict.append(point[dim])
+			point2cluster[tuple(index_dict)] = idx
 		for c in evaluation_dict:
 			evaluation_dict[c][idx] = 0
 		idx += 1
-
-
 
 	for point in point2class:		
 		if point2cluster.get(point, -1) == -1:
@@ -544,10 +566,11 @@ ALGORITM MARIACLUST
 '''
 if __name__ == "__main__":
 	filename = sys.argv[1]
-	no_clusters = int(sys.argv[2]) #no  clusters
+	no_clusters = int(sys.argv[2]) #no clusters
 	no_bins = int(sys.argv[3]) #no bins
 	expand_factor = float(sys.argv[4]) # expantion factor how much a cluster can expand based on the number of neighbours -- factorul cu care inmultesc closest mean (cat de mult se poate extinde un cluster pe baza vecinilor)
 	cluster_distance = int(sys.argv[5])
+	no_dims = int(sys.argv[6]) #no dims
 	'''
 	how you compute the dinstance between clusters:
 	1 = centroid linkage
@@ -560,21 +583,28 @@ if __name__ == "__main__":
 		content = f.readlines()
 
 	content = [l.strip() for l in content]
-	x = list()
-	y = list()
+
+	each_dimension_values = collections.defaultdict(list)
 	dataset_xy = list()
 	dataset_xy_validate = list()
 	clase_points = collections.defaultdict(list)
 
 	for l in content:
 		aux = l.split('\t')
-		x.append(float(aux[0]))
-		y.append(float(aux[1]))
-		dataset_xy.append([float(aux[0]), float(aux[1])])
-		dataset_xy_validate.append([float(aux[0]), float(aux[1]), int(aux[2])]) #aux[2] este nr cluster
-		clase_points[int(aux[2])].append((float(aux[0]), float(aux[1])))
+		for dim in range(no_dims):
+			each_dimension_values[dim].append(float(aux[dim]))
+		helper_aux = list()
+		for dim in range(no_dims):
+			helper_aux.append(float(aux[dim]))
+		
+		dataset_xy.append(helper_aux)
+		clase_points[int(aux[no_dims])].append(tuple(helper_aux))
 
-	pdf = compute_pdf_kde(dataset_xy, x, y) #calculez functia densitate probabilitate utilizand kde
+		helper_aux.append(aux[no_dims])
+		dataset_xy_validate.append(helper_aux) #aux[no_dims] este nr cluster
+		
+
+	pdf = compute_pdf_kde(dataset_xy, each_dimension_values) #calculez functia densitate probabilitate utilizand kde
 
 	#detectie si eliminare outlieri
 
@@ -582,26 +612,26 @@ if __name__ == "__main__":
 	print(outliers_iqr_pdf)
 
 	dataset_xy_aux = list()
-	x_aux = list()
-	y_aux = list()
+	each_dimension_values_aux = collections.defaultdict(list)
 
 	#eliminare outlieri, refac dataset_xy, x si y
 
 	for q in range(len(dataset_xy)):
 		if(q not in outliers_iqr_pdf):
 			dataset_xy_aux.append(dataset_xy[q])
-			x_aux.append(dataset_xy[q][0])
-			y_aux.append(dataset_xy[q][1])
+			for dim in range(no_dims):
+				each_dimension_values_aux[dim].append(dataset_xy[q][dim])
 
 	dataset_xy = dataset_xy_aux
-	x = x_aux
-	y = y_aux
+	each_dimension_values = each_dimension_values_aux
 
 	#recalculez pdf, ca altfel se produc erori
 
-	pdf = compute_pdf_kde(dataset_xy, x, y) #calculez functia densitate probabilitate din nou
-	f,xmin, xmax, ymin, ymax, xx, yy = evaluate_pdf_kde(dataset_xy, x, y) #pentru afisare zone dense albastre
-	plt.contourf(xx, yy, f, cmap='Blues') #pentru afisare zone dense albastre
+	pdf = compute_pdf_kde(dataset_xy, each_dimension_values) #calculez functia densitate probabilitate din nou
+	if(no_dims==2):
+		#coturul cu albastru este plotat doar pentru 2 dimensiuni
+		f,xmin, xmax, ymin, ymax, xx, yy = evaluate_pdf_kde(dataset_xy, each_dimension_values) #pentru afisare zone dense albastre
+		plt.contourf(xx, yy, f, cmap='Blues') #pentru afisare zone dense albastre
 		
 	partition_dict = collections.defaultdict(list)
 	
@@ -617,10 +647,22 @@ if __name__ == "__main__":
 		culoare = random_color_scaled()
 		for idx_point in range(len(dataset_xy)):
 			if(pdf[idx_point]>=bins[idx_bin] and pdf[idx_point]<=bins[idx_bin+1]):
-				plt.scatter(dataset_xy[idx_point][0], dataset_xy[idx_point][1], color=culoare)
-				partition_dict[idx_bin].append( [dataset_xy[idx_point][0], dataset_xy[idx_point][1], idx_point, pdf[idx_point], dataset_xy_validate[idx_point][2]]) #mentin si id-ul punctului in setul de date, densitatea de probabilitate in acel punct si clasa din care face parte pctul 
-
-	plt.show()
+				element_to_append = list()
+				for dim in range(no_dims):
+					element_to_append.append(dataset_xy[idx_point][dim])
+				element_to_append.append(-1) #clusterul nearest neighbour din care face parte punctul
+				element_to_append.append(pdf[idx_point])
+				element_to_append.append(-1) #daca punctul e deja parsta nearest neighbour
+				element_to_append.append(idx_point) 
+				element_to_append.append(dataset_xy_validate[idx_point][no_dims])
+				partition_dict[idx_bin].append(element_to_append)
+				#scatter doar pentru 2 sau 3 dimensiuni
+				if(no_dims == 2):
+					plt.scatter(dataset_xy[idx_point][0], dataset_xy[idx_point][1], color=culoare)
+				elif(no_dims == 3):
+					plt.scatter(dataset_xy[idx_point][0], dataset_xy[idx_point][1], dataset_xy[idx_point][2], color=culoare)
+	if(no_dims == 2 or no_dims == 3):
+		plt.show()
 
 
 	'''
@@ -631,12 +673,13 @@ if __name__ == "__main__":
 	
 	final_partitions, noise = split_partitions(partition_dict, expand_factor) #functie care scindeaza partitiile
 	
-	for k in final_partitions:
-		color = random_color_scaled()
-		for pixel in final_partitions[k]:
-			plt.scatter(pixel[0], pixel[1], color=color)
+	if(no_dims==2):
+		for k in final_partitions:
+			color = random_color_scaled()
+			for pixel in final_partitions[k]:
+				plt.scatter(pixel[0], pixel[1], color=color)
 
-	plt.show()
+		plt.show()
 
 
 	intermediary_centroids, cluster_points = agglomerative_clustering2(final_partitions, no_clusters, cluster_distance) #paramateri: partitiile rezultate, numarul de clustere
@@ -661,13 +704,13 @@ if __name__ == "__main__":
 	
 	print("==============================")
 	
+	if(no_dims==2):
+		plt.contourf(xx, yy, f, cmap='Blues')
+		#afisare finala
+		for k in cluster_points:
+			c = random_color_scaled()
+			for point in cluster_points[k]:
+				plt.scatter(point[0], point[1], color=c)
 
-	plt.contourf(xx, yy, f, cmap='Blues')
-	#afisare finala
-	for k in cluster_points:
-		c = random_color_scaled()
-		for point in cluster_points[k]:
-			plt.scatter(point[0], point[1], color=c)
-
-	plt.show()
+		plt.show()
 
