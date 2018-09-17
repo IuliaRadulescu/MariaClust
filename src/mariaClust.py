@@ -546,9 +546,9 @@ def evaluate_cluster(clase_points, cluster_points):
 			evaluation_dict[c][idx] = 0
 		idx += 1
 
-	for point in point2class:		
+	'''for point in point2class:		
 		if point2cluster.get(point, -1) == -1:
-			print("punct pierdut dupa clustering:", point)
+			print("punct pierdut dupa clustering:", point)'''
 
 	for point in point2cluster:
 		evaluation_dict[point2class[point]][point2cluster[point]] += 1
@@ -609,7 +609,10 @@ if __name__ == "__main__":
 	#detectie si eliminare outlieri
 
 	outliers_iqr_pdf = outliers_iqr(pdf)
-	print(outliers_iqr_pdf)
+	print("Am identificat urmatorii outlieri: ")
+	for outlier_id in outliers_iqr_pdf:
+		print(dataset_xy[outliers_id])
+	print("======================================")
 
 	dataset_xy_aux = list()
 	each_dimension_values_aux = collections.defaultdict(list)
