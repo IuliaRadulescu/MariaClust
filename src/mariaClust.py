@@ -244,8 +244,8 @@ def outliers_iqr(ys):
 	upper_bound = quartile_3 + (iqr * 1.5)
 	outliers_iqr = list()
 	for idx in range(len(ys)):
-		if ys[idx] > upper_bound:
-			outliers_iqr.append(idx)
+		'''if ys[idx] > upper_bound:
+			outliers_iqr.append(idx)'''
 		if ys[idx] < lower_bound:
 			outliers_iqr.append(idx)
 	return outliers_iqr
@@ -261,7 +261,7 @@ def get_closest_mean(dataset_k):
 	just_pdfs = list(set(just_pdfs))
 
 	mean_pdf = sum(just_pdfs)/len(just_pdfs)
-
+	#mean_pdf = 0
 	k=int(math.ceil(0.1*len(dataset_k)))
 	distances = list()
 	for point in dataset_k:
@@ -609,9 +609,9 @@ if __name__ == "__main__":
 	#detectie si eliminare outlieri
 
 	outliers_iqr_pdf = outliers_iqr(pdf)
-	print("Am identificat urmatorii outlieri: ")
-	for outlier_id in outliers_iqr_pdf:
-		print(dataset_xy[outlier_id])
+	print("Am identificat urmatorii outlieri: "+str(len(outliers_iqr_pdf))+" din numar de pcte "+str(len(dataset_xy)))
+	'''for outlier_id in outliers_iqr_pdf:
+		print(dataset_xy[outlier_id])'''
 	print("======================================")
 
 	dataset_xy_aux = list()
