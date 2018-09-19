@@ -47,7 +47,6 @@ class MariaClust:
 		Identificatorii partitiilor sunt pastrati in lista intermediary_centroids, iar clusterele cu punctele asociate sunt pastrate in dictionarul cluster_points.
 		cluster_points => cheile sunt identificatorii partitiilor (centroizii lor), iar valorile sunt punctele asociate
 		Criteriul de unire a doua clustere variaza'''
-		global no_dims
 
 		no_agg_clusters = len(partitions)
 		intermediary_centroids = list()
@@ -93,7 +92,7 @@ class MariaClust:
 				for p in range(q+1, len(intermediary_centroids)):
 					idx_dict_q = list()
 					idx_dict_p = list()
-					for dim in range(no_dims):
+					for dim in range(self.no_dims):
 						idx_dict_q.append(intermediary_centroids[q][dim])
 						idx_dict_p.append(intermediary_centroids[p][dim])
 
@@ -122,7 +121,7 @@ class MariaClust:
 			idx_uneste_a = list()
 			idx_uneste_b = list()
 
-			for dim in range(no_dims):
+			for dim in range(self.no_dims):
 				idx_uneste_a.append(intermediary_centroids[uneste_a_idx][dim])
 				idx_uneste_b.append(intermediary_centroids[uneste_b_idx][dim])
 
@@ -140,7 +139,7 @@ class MariaClust:
 			del cluster_points[tuple(idx_uneste_b)]
 
 			idx_cluster = list()
-			for dim in range(no_dims):
+			for dim in range(self.no_dims):
 				idx_cluster.append(newCluster[dim])
 
 			cluster_points[tuple(idx_cluster)] = []
@@ -231,20 +230,20 @@ class MariaClust:
 
 	#Distanta Euclidiana dintre doua puncte 2d
 	def DistFunc(self, x, y):
-		global no_dims
+
 		sum_powers = 0
-		for dim in range(no_dims):
+		for dim in range(self.no_dims):
 			sum_powers = math.pow(x[dim]-y[dim], 2) + sum_powers
 		return math.sqrt(sum_powers)
 
 	def centroid(self, pixels):
-		global no_dims
+		
 		sum_each_dim = {}
-		for dim in range(no_dims):
+		for dim in range(self.no_dims):
 			sum_each_dim[dim] = 0
 
 		for pixel in pixels:
-			for dim in range(no_dims):
+			for dim in range(self.no_dims):
 				sum_each_dim[dim] = sum_each_dim[dim] + pixel[dim]
 		
 		centroid_coords = list()
