@@ -419,8 +419,8 @@ class MariaClust:
 
 
 	def calculate_centroid(self, cluster1, cluster2):
-		centroid1 = centroid(cluster1)
-		centroid2 = centroid(cluster2)
+		centroid1 = self.centroid(cluster1)
+		centroid2 = self.centroid(cluster2)
 
 		dist = self.DistFunc(centroid1, centroid2)
 
