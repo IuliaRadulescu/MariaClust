@@ -21,7 +21,7 @@ FUNCTII AUXILIARE
 class MariaClust:
 
 	def __init__(self, no_clusters, no_bins, expand_factor, cluster_distance, no_dims):
-		self.filename = filename
+		
 		self.no_clusters = no_clusters 
 		self.no_bins = no_bins
 		self.expand_factor = expand_factor # expantion factor how much a cluster can expand based on the number of neighbours -- factorul cu care inmultesc closest mean (cat de mult se poate extinde un cluster pe baza vecinilor)
