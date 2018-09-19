@@ -20,7 +20,7 @@ FUNCTII AUXILIARE
 
 class MariaClust:
 
-	def __init__(self, filename, no_clusters, no_bins, expand_factor, cluster_distance, no_dims):
+	def __init__(self, no_clusters, no_bins, expand_factor, cluster_distance, no_dims):
 		self.filename = filename
 		self.no_clusters = no_clusters 
 		self.no_bins = no_bins
@@ -532,31 +532,9 @@ class MariaClust:
 		print('RI       ', evaluation_measures.rand_index(evaluation_dict))
 		print('ARI      ', evaluation_measures.adj_rand_index(evaluation_dict))
 
-	def cluster_dataset(self):
+	def cluster_dataset(self, dataset_xy, dataset_xy_validate, each_dimension_values, clase_points):
 
-		#initializations
-		each_dimension_values = collections.defaultdict(list)
-		dataset_xy = list()
-		dataset_xy_validate = list()
-		clase_points = collections.defaultdict(list)
-
-		partition_dict = collections.defaultdict(list)
-
-		with open(self.filename) as f:
-			content = f.readlines()
-
-		content = [l.strip() for l in content]
-
-		for l in content:
-			aux = l.split('\t')
-			for dim in range(no_dims):
-				each_dimension_values[dim].append(float(aux[dim]))
-			list_of_coords = list()
-			for dim in range(no_dims):
-				list_of_coords.append(float(aux[dim]))
-			dataset_xy.append(list_of_coords)
-			dataset_xy_validate.append(int(aux[no_dims]))
-			clase_points[int(aux[no_dims])].append(tuple(list_of_coords))			
+		partition_dict = collections.defaultdict(list)			
 
 		self.pdf = self.compute_pdf_kde(dataset_xy, each_dimension_values) #calculez functia densitate probabilitate utilizand kde
 
@@ -693,7 +671,31 @@ if __name__ == "__main__":
 	3 = single linkage
 	4 = average linkage ponderat
 	'''
-	mariaClustInstance = MariaClust(filename, no_clusters, no_bins, expand_factor, cluster_distance, no_dims)
-	mariaClustInstance.cluster_dataset()
+
+	#read from file
+
+	each_dimension_values = collections.defaultdict(list)
+	dataset_xy = list()
+	dataset_xy_validate = list()
+	clase_points = collections.defaultdict(list)
+
+	with open(filename) as f:
+			content = f.readlines()
+
+	content = [l.strip() for l in content]
+
+	for l in content:
+		aux = l.split('\t')
+		for dim in range(no_dims):
+			each_dimension_values[dim].append(float(aux[dim]))
+		list_of_coords = list()
+		for dim in range(no_dims):
+			list_of_coords.append(float(aux[dim]))
+		dataset_xy.append(list_of_coords)
+		dataset_xy_validate.append(int(aux[no_dims]))
+		clase_points[int(aux[no_dims])].append(tuple(list_of_coords))
+
+	mariaClustInstance = MariaClust(no_clusters, no_bins, expand_factor, cluster_distance, no_dims)
+	mariaClustInstance.cluster_dataset(dataset_xy, dataset_xy_validate, each_dimension_values, clase_points)
 
 
