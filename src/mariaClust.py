@@ -3,6 +3,7 @@ from __future__ import division
 import numpy as np
 import matplotlib.pyplot as plt
 import scipy.stats as st
+import statsmodels.api as sm
 
 import sys
 import os
@@ -174,7 +175,7 @@ class MariaClust:
 
 		return intermediary_centroids, cluster_points
 
-	def compute_pdf_kde(self, dataset_xy, each_dimension_values):
+	def compute_pdf_kde_scipy(self, dataset_xy, each_dimension_values):
 		'''
 		Calculeaza functia probabilitate de densitate si intoarce valorile ei pentru
 		punctele din dataset_xy
@@ -188,6 +189,21 @@ class MariaClust:
 
 		scott_fact = kernel.scotts_factor()
 		print("who is scott? "+str(scott_fact))
+		return pdf
+
+	def compute_pdf_kde(self, dataset_xy, each_dimension_values):
+		values_list = list()
+		for dim_id in each_dimension_values:
+			stacking_list = list()
+			for point in each_dimension_values[dim_id]:
+				stacking_list.append([point])
+			#print(np.shape(stacking_list))
+			values_list.append(stacking_list)
+		#print(np.shape(values_list))
+		dens_u = sm.nonparametric.KDEMultivariate(data=values_list, var_type='cc', bw='normal_reference')
+
+		pdf = dens_u.pdf()
+
 		return pdf
 
 
