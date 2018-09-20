@@ -1,4 +1,11 @@
 MULTIDIEMNSIONAL
+
+python src/mariaClust.py datasets/dim512.txt 16 3 1 1 512
+(Purity:  1.0)
+(Entropy:  0.0)
+(RI:  1.0)
+(ARI:  1.0)
+
 python src/mariaClust.py datasets/dim256.txt 16 3 1 1 256
 ('Purity:  ', 1.0)
 ('Entropy: ', 0.0)

@@ -1,0 +1,13 @@
+nohup: ignoring input
+who is scott? 0.9866567363483728
+We identified 0 outliers from 1024 points
+======================================
+who is scott? 0.9866567363483728
+Expand factor 1.0
+len partitions 18
+Purity:   1.0
+Entropy:  0.0
+RI        1.0
+ARI       1.0
+Evaluation
+==============================
