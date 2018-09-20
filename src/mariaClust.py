@@ -1,7 +1,7 @@
 from __future__ import division
 
 import numpy as np
-import matplotlib.pyplot as plt
+#import matplotlib.pyplot as plt
 import scipy.stats as st
 import statsmodels.api as sm
 
@@ -200,7 +200,7 @@ class MariaClust:
 			#print(np.shape(stacking_list))
 			values_list.append(stacking_list)
 		#print(np.shape(values_list))
-		dens_u = sm.nonparametric.KDEMultivariate(data=values_list, var_type='cc', bw='normal_reference')
+		dens_u = sm.nonparametric.KDEMultivariate(data=values_list, var_type='c'*self.no_dims, bw='normal_reference')
 
 		pdf = dens_u.pdf()
 
