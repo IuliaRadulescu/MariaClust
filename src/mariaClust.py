@@ -1,7 +1,7 @@
 from __future__ import division
 
 import numpy as np
-import matplotlib.pyplot as plt
+#import matplotlib.pyplot as plt
 import scipy.stats as st
 
 import sys
@@ -531,6 +531,13 @@ class MariaClust:
 		print('Entropy: ', evaluation_measures.entropy(evaluation_dict)) # perfect results have entropy == 0
 		print('RI       ', evaluation_measures.rand_index(evaluation_dict))
 		print('ARI      ', evaluation_measures.adj_rand_index(evaluation_dict))
+
+		f = open("rezultate_evaluare.txt", "a")
+		f.write('Purity:  '+str(evaluation_measures.purity(evaluation_dict))+"\n")
+		f.write('Entropy:  '+str(evaluation_measures.entropy(evaluation_dict))+"\n")
+		f.write('RI:  '+str(evaluation_measures.rand_index(evaluation_dict))+"\n")
+		f.write('ARI:  '+str(evaluation_measures.adj_rand_index(evaluation_dict))+"\n")
+		f.close()
 
 	def cluster_dataset(self, dataset_xy, dataset_xy_validate, each_dimension_values, clase_points):
 
