@@ -65,6 +65,14 @@ python src/mariaClust.py datasets/compound.txt 6 3 1 3 #cu modificarea adusa pe 
 ('RI       ', 0.96678883137491967)
 ('ARI      ', 0.91126960823834369)
 
+JAIN - BIBLIOTECA statsmodels
+python src/mariaClust.py datasets/jain.txt 2 3 1.8 3 2
+('Purity:  ', 1.0)
+('Entropy: ', 0.0)
+('RI       ', 1.0)
+('ARI      ', 1.0)
+
+
 python mariaClust.py jain.txt 2 3 1 2 #ramane neschimbat 
 ('Purity:  ', 1.0)
 ('Entropy: ', 0.0)
