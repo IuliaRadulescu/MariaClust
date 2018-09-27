@@ -1,9 +1,10 @@
 from __future__ import division
 
 import numpy as np
-#import matplotlib.pyplot as plt
+import matplotlib.pyplot as plt
 import scipy.stats as st
-import statsmodels.api as sm
+#import statsmodels.api as sm
+from sklearn.neighbors.kde import KernelDensity
 
 import sys
 import os
@@ -188,10 +189,29 @@ class MariaClust:
 		pdf = kernel.evaluate(values)
 
 		scott_fact = kernel.scotts_factor()
-		print("who is scott? "+str(scott_fact))
-		return pdf
+		'''print("who is scott? "+str(scott_fact))
+		return pdf'''
+		return scott_fact
 
 	def compute_pdf_kde(self, dataset_xy, each_dimension_values):
+
+		bw_scott = len(dataset_xy)**(-1./(self.no_dims+4))
+		kde = KernelDensity(kernel='gaussian', bandwidth=bw_scott).fit(dataset_xy)
+		#print(kde.score_samples(dataset_xy))
+		'''print(kde.score(dataset_xy))
+		kde = KernelDensity(kernel='tophat').fit(dataset_xy)
+		print(kde.score(dataset_xy))
+		kde = KernelDensity(kernel='epanechnikov').fit(dataset_xy)
+		print(kde.score(dataset_xy))
+		kde = KernelDensity(kernel='exponential').fit(dataset_xy)
+		print(kde.score(dataset_xy))
+		kde = KernelDensity(kernel='linear').fit(dataset_xy)
+		print(kde.score(dataset_xy))
+		kde = KernelDensity(kernel='cosine').fit(dataset_xy)
+		print(kde.score(dataset_xy))'''
+		return kde.score_samples(dataset_xy)
+
+	def compute_pdf_kde_stats(self, dataset_xy, each_dimension_values):
 		values_list = list()
 		for dim_id in each_dimension_values:
 			stacking_list = list()
