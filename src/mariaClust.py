@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 import scipy.stats as st
 #import statsmodels.api as sm
 from sklearn.neighbors.kde import KernelDensity
+from sklearn.cluster import estimate_bandwidth
 
 import sys
 import os
@@ -191,11 +192,22 @@ class MariaClust:
 		scott_fact = kernel.scotts_factor()
 		'''print("who is scott? "+str(scott_fact))
 		return pdf'''
-		return scott_fact
+		return pdf
+
+	def compute_scipy_bandwidth(self, dataset_xy, each_dimension_values):
+		stacking_list = list()
+		for dim_id in each_dimension_values:
+			stacking_list.append(each_dimension_values[dim_id])
+		values = np.vstack(stacking_list)
+		kernel = st.gaussian_kde(values) #bw_method=
+		f = kernel.covariance_factor()
+		bw = f * np.array(stacking_list).std()
+		return bw
 
 	def compute_pdf_kde(self, dataset_xy, each_dimension_values):
 
-		bw_scott = len(dataset_xy)**(-1./(self.no_dims+4))
+		bw_scott = self.compute_scipy_bandwidth(dataset_xy, each_dimension_values)
+		#bw_sklearn = estimate_bandwidth(dataset_xy)
 		kde = KernelDensity(kernel='gaussian', bandwidth=bw_scott).fit(dataset_xy)
 		#print(kde.score_samples(dataset_xy))
 		'''print(kde.score(dataset_xy))
@@ -209,21 +221,8 @@ class MariaClust:
 		print(kde.score(dataset_xy))
 		kde = KernelDensity(kernel='cosine').fit(dataset_xy)
 		print(kde.score(dataset_xy))'''
-		return kde.score_samples(dataset_xy)
-
-	def compute_pdf_kde_stats(self, dataset_xy, each_dimension_values):
-		values_list = list()
-		for dim_id in each_dimension_values:
-			stacking_list = list()
-			for point in each_dimension_values[dim_id]:
-				stacking_list.append([point])
-			#print(np.shape(stacking_list))
-			values_list.append(stacking_list)
-		#print(np.shape(values_list))
-		dens_u = sm.nonparametric.KDEMultivariate(data=values_list, var_type='c'*self.no_dims, bw='normal_reference')
-
-		pdf = dens_u.pdf()
-
+		log_pdf = kde.score_samples(dataset_xy)
+		pdf = np.exp(log_pdf)
 		return pdf
 
 
