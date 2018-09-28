@@ -201,7 +201,8 @@ class MariaClust:
 		values = np.vstack(stacking_list)
 		kernel = st.gaussian_kde(values) #bw_method=
 		f = kernel.covariance_factor()
-		bw = f * np.array(stacking_list).std()
+		bw = f*np.cov(values, rowvar=1, bias=False)
+		print("bw = "+str(bw))
 		return bw
 
 	def compute_pdf_kde(self, dataset_xy, each_dimension_values):
@@ -227,6 +228,34 @@ class MariaClust:
 
 
 	def evaluate_pdf_kde(self, dataset_xy, each_dimension_values):
+		x = list()
+		y = list()
+
+		x = each_dimension_values[0]
+		y = each_dimension_values[1]
+
+		xmin = min(x)-2
+		xmax = max(x)+2
+
+		ymin = min(y)-2
+		ymax = max(y)+2
+
+		# Peform the kernel density estimate
+		xx, yy = np.mgrid[xmin:xmax:100j, ymin:ymax:100j]
+		xx_ravel = xx.ravel()
+		yy_ravel = yy.ravel()
+		dataset_xxyy = list()
+		for q in range(len(xx_ravel)):
+			dataset_xxyy.append([xx_ravel[q], yy_ravel[q]])
+		bw_scott = self.compute_scipy_bandwidth(dataset_xy, each_dimension_values)
+		kde = KernelDensity(kernel='gaussian', bandwidth=bw_scott).fit(dataset_xy)
+		log_pdf = kde.score_samples(dataset_xxyy)
+		pdf = np.exp(log_pdf)
+		f = np.reshape(pdf.T, xx.shape)
+		return (f,xmin, xmax, ymin, ymax, xx, yy)
+
+
+	def evaluate_pdf_kde_scipy(self, dataset_xy, each_dimension_values):
 		'''
 		Functioneaza doar pentru doua dimensiuni
 		Genereaza graficul in nuante de albastru pentru functia probabilitate de densitate
@@ -612,6 +641,7 @@ class MariaClust:
 		#recalculez pdf, ca altfel se produc erori
 
 		self.pdf = self.compute_pdf_kde(dataset_xy, each_dimension_values) #calculez functia densitate probabilitate din nou
+
 		if(self.no_dims==2):
 			#coturul cu albastru este plotat doar pentru 2 dimensiuni
 			f,xmin, xmax, ymin, ymax, xx, yy = self.evaluate_pdf_kde(dataset_xy, each_dimension_values) #pentru afisare zone dense albastre
