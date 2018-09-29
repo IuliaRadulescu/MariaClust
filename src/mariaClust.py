@@ -3,7 +3,6 @@ from __future__ import division
 import numpy as np
 import matplotlib.pyplot as plt
 import scipy.stats as st
-#import statsmodels.api as sm
 from sklearn.neighbors.kde import KernelDensity
 from sklearn.cluster import estimate_bandwidth
 
@@ -186,48 +185,40 @@ class MariaClust:
 		for dim_id in each_dimension_values:
 			stacking_list.append(each_dimension_values[dim_id])
 		values = np.vstack(stacking_list)
-		kernel = st.gaussian_kde(values) #bw_method=
+		kernel = st.gaussian_kde(values) 
 		pdf = kernel.evaluate(values)
 
-		scott_fact = kernel.scotts_factor()
-		'''print("who is scott? "+str(scott_fact))
-		return pdf'''
 		return pdf
 
-	def compute_scipy_bandwidth(self, dataset_xy, each_dimension_values):
+	def compute_pdf_kde(self, dataset_xy, each_dimension_values):
+		#verificam valoarea lui norm factor
 		stacking_list = list()
 		for dim_id in each_dimension_values:
 			stacking_list.append(each_dimension_values[dim_id])
 		values = np.vstack(stacking_list)
-		kernel = st.gaussian_kde(values) #bw_method=
-		f = kernel.covariance_factor()
-		bw = f*np.cov(values, rowvar=1, bias=False)
-		print("bw = "+str(bw))
-		return bw
+		kernel = st.gaussian_kde(values)
+		print("norm_factor = "+str(kernel._norm_factor))
+		pdf = []
+		if(kernel._norm_factor!=0):
+			#diferit de 0, pot utiliza scipy
+			pdf = self.compute_pdf_kde_scipy(dataset_xy, each_dimension_values)
+		else:
+			#este 0, nu pot imparti cu scipy, folosesc sklearn
+			pdf = self.compute_pdf_kde_sklearn(dataset_xy)
+		return pdf
 
-	def compute_pdf_kde(self, dataset_xy, each_dimension_values):
+	def compute_pdf_kde_sklearn(self, dataset_xy):
 
-		bw_scott = self.compute_scipy_bandwidth(dataset_xy, each_dimension_values)
-		#bw_sklearn = estimate_bandwidth(dataset_xy)
-		kde = KernelDensity(kernel='gaussian', bandwidth=bw_scott).fit(dataset_xy)
-		#print(kde.score_samples(dataset_xy))
-		'''print(kde.score(dataset_xy))
-		kde = KernelDensity(kernel='tophat').fit(dataset_xy)
-		print(kde.score(dataset_xy))
-		kde = KernelDensity(kernel='epanechnikov').fit(dataset_xy)
-		print(kde.score(dataset_xy))
-		kde = KernelDensity(kernel='exponential').fit(dataset_xy)
-		print(kde.score(dataset_xy))
-		kde = KernelDensity(kernel='linear').fit(dataset_xy)
-		print(kde.score(dataset_xy))
-		kde = KernelDensity(kernel='cosine').fit(dataset_xy)
-		print(kde.score(dataset_xy))'''
+		bw_sklearn = estimate_bandwidth(dataset_xy)
+		print("bw_sklearn este "+str(bw_sklearn))
+		kde = KernelDensity(kernel='gaussian', bandwidth=bw_sklearn).fit(dataset_xy)
 		log_pdf = kde.score_samples(dataset_xy)
 		pdf = np.exp(log_pdf)
 		return pdf
 
 
-	def evaluate_pdf_kde(self, dataset_xy, each_dimension_values):
+	def evaluate_pdf_kde_sklearn(self, dataset_xy, each_dimension_values):
+		#evaluare pdf sklearn
 		x = list()
 		y = list()
 
@@ -255,8 +246,9 @@ class MariaClust:
 		return (f,xmin, xmax, ymin, ymax, xx, yy)
 
 
-	def evaluate_pdf_kde_scipy(self, dataset_xy, each_dimension_values):
+	def evaluate_pdf_kde(self, dataset_xy, each_dimension_values):
 		'''
+		evaluare pdf scipy
 		Functioneaza doar pentru doua dimensiuni
 		Genereaza graficul in nuante de albastru pentru functia probabilitate de densitate
 		calculata pentru dataset_xy
