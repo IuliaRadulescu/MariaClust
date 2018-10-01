@@ -59,7 +59,7 @@ class EvaluateAlgorithms:
 		return cluster_points
 		
 
-	def evaluate_cluster(self, clase_points, cluster_points):
+	def evaluate_cluster(self, clase_points, cluster_points, filename):
 		
 		evaluation_dict = {}
 		point2cluster = {}
@@ -92,11 +92,13 @@ class EvaluateAlgorithms:
 		print('RI ', evaluation_measures.rand_index(evaluation_dict))
 		print('ARI ', evaluation_measures.adj_rand_index(evaluation_dict))
 
-		f = open("rezultate_evaluare.txt", "a")
+		f = open("rezultate_evaluare_KMEANS.txt", "a")
+		f.write("Rezultate evaluare pentru setul de date "+str(filename)+"\n")
 		f.write('Purity: '+str(evaluation_measures.purity(evaluation_dict))+"\n")
 		f.write('Entropy: '+str(evaluation_measures.entropy(evaluation_dict))+"\n")
 		f.write('RI: '+str(evaluation_measures.rand_index(evaluation_dict))+"\n")
 		f.write('ARI: '+str(evaluation_measures.adj_rand_index(evaluation_dict))+"\n")
+		f.write("\n")
 		f.close()
 
 	def random_color_scaled(self):
@@ -115,31 +117,39 @@ class EvaluateAlgorithms:
 		plt.show()
 
 if __name__ == "__main__":
-	filename = sys.argv[1]
-	no_clusters = int(sys.argv[2]) #no clusters
-	no_dims = int(sys.argv[3]) #no clusters
-	each_dimension_values = collections.defaultdict(list)
-	dataset_xy = list()
-	dataset_xy_validate = list()
-	clase_points = collections.defaultdict(list)
+	
+	home_path = "F:\\IULIA\\GITHUB_IULIA\\MariaClust\\datasets\\"
+	filenames = [home_path+"aggregation.txt", home_path+"compound.txt", home_path+"d31.txt", home_path+"flame.txt", home_path+"jain.txt", home_path+"pathbased.txt", home_path+"r15.txt", home_path+"spiral.txt"]
+	no_clusters_all = [7, 6, 31, 2, 2, 3, 15, 3]
+	no_dims_all = [2, 2, 2, 2, 2, 2, 2, 2]
 
-	with open(filename) as f:
-			content = f.readlines()
+	for nr_crt in range(len(filenames)):
 
-	content = [l.strip() for l in content]
+		filename = filenames[nr_crt]
+		no_clusters = no_clusters_all[nr_crt]
+		no_dims = no_dims_all[nr_crt]
 
-	for l in content:
-		aux = l.split('\t')
-		for dim in range(no_dims):
-			each_dimension_values[dim].append(float(aux[dim]))
-		list_of_coords = list()
-		for dim in range(no_dims):
-			list_of_coords.append(float(aux[dim]))
-		dataset_xy.append(list_of_coords)
-		dataset_xy_validate.append(int(aux[no_dims]))
-		clase_points[int(aux[no_dims])].append(tuple(list_of_coords))
+		each_dimension_values = collections.defaultdict(list)
+		dataset_xy = list()
+		dataset_xy_validate = list()
+		clase_points = collections.defaultdict(list)
 
-	evaluateAlg = EvaluateAlgorithms(no_dims)
-	cluster_points = evaluateAlg.runKMeans(no_clusters, dataset_xy)
-	evaluateAlg.evaluate_cluster(clase_points, cluster_points)
-	evaluateAlg.plot_clusters(cluster_points)
+		with open(filename) as f:
+				content = f.readlines()
+
+		content = [l.strip() for l in content]
+
+		for l in content:
+			aux = l.split('\t')
+			for dim in range(no_dims):
+				each_dimension_values[dim].append(float(aux[dim]))
+			list_of_coords = list()
+			for dim in range(no_dims):
+				list_of_coords.append(float(aux[dim]))
+			dataset_xy.append(list_of_coords)
+			dataset_xy_validate.append(int(aux[no_dims]))
+			clase_points[int(aux[no_dims])].append(tuple(list_of_coords))
+
+		evaluateAlg = EvaluateAlgorithms(no_dims)
+		cluster_points = evaluateAlg.runKMeans(no_clusters, dataset_xy)
+		evaluateAlg.evaluate_cluster(clase_points, cluster_points, filename)
