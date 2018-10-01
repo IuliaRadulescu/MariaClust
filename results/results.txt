@@ -45,12 +45,11 @@ python src/mariaClust.py datasets/aggregation.txt 7 8 0.8 1 #cu modificarea adus
 ('RI       ', 0.99705880455885298)
 ('ARI      ', 0.99132680602141798)
 
-python src/mariaClust.py datasets/r15.txt 15 8 0.5 1 #cu modificarea adusa pe 11.09.2018
-('Purity:  ', 0.98999999999999988)
-('Entropy: ', 0.015684012562934488)
-('RI       ', 0.99739565943238728)
-('ARI      ', 0.97861734465515993)
-
+python src/mariaClust.py datasets/r15.txt 15 3 0.5 1 #cu modificarea adusa pe 11.09.2018
+('Purity:  ', 0.99166666666666647)
+('Entropy: ', 0.013628797787284097)
+('RI       ', 0.99782415136338343)
+('ARI      ', 0.98213330104940322)
 
 python src/mariaClust.py datasets/pathbased.txt 3 2 0.73 2 #cu modificarea adusa pe 11.09.2018
 ('Purity:  ', 0.98996655518394649)
