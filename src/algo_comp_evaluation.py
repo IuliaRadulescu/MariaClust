@@ -92,9 +92,27 @@ class EvaluateAlgorithms:
 		cluster_points = {}
 		for q in range(k):
 			cluster_points[q] = list()
+
 		cure_instance = cure(data=X, number_cluster=k)
 		cure_instance.process()
 		clusters = cure_instance.get_clusters()
+		
+		for id_point in range(len(X)):
+			for cluster_id in range(len(clusters)):
+				point_ids_in_cluster = [int(point_id_in_cluster) for point_id_in_cluster in  clusters[cluster_id]]
+				if(id_point in point_ids_in_cluster):
+					cluster_points[cluster_id].append(X[id_point])
+
+		return cluster_points
+
+	def runCLARANS(self, k, X):
+		cluster_points = {}
+		for q in range(k):
+			cluster_points[q] = list()
+
+		clarans_instance = clarans(data=X, number_clusters=k, numlocal=5, maxneighbor=5)
+		clarans_instance.process()
+		clusters = clarans_instance.get_clusters()
 		
 		for id_point in range(len(X)):
 			for cluster_id in range(len(clusters)):
@@ -137,7 +155,7 @@ class EvaluateAlgorithms:
 		print('RI ', evaluation_measures.rand_index(evaluation_dict))
 		print('ARI ', evaluation_measures.adj_rand_index(evaluation_dict))
 
-		f = open("rezultate_evaluare_CURE.txt", "a")
+		f = open("rezultate_evaluare_CLARANS.txt", "a")
 		f.write("Rezultate evaluare pentru setul de date "+str(filename)+"\n")
 		f.write('Purity: '+str(evaluation_measures.purity(evaluation_dict))+"\n")
 		f.write('Entropy: '+str(evaluation_measures.entropy(evaluation_dict))+"\n")
@@ -163,7 +181,7 @@ class EvaluateAlgorithms:
 
 if __name__ == "__main__":
 	
-	home_path = "F:\\IULIA\\GITHUB_IULIA\\MariaClust\\datasets\\"
+	home_path = "/home/iuliar/GITHUB_IULIA/MariaClust/datasets/"
 	filenames = [home_path+"aggregation.txt", home_path+"compound.txt", home_path+"d31.txt", home_path+"flame.txt", home_path+"jain.txt", home_path+"pathbased.txt", home_path+"r15.txt", home_path+"spiral.txt"]
 	no_clusters_all = [7, 6, 31, 2, 2, 3, 15, 3]
 	no_dims_all = [2, 2, 2, 2, 2, 2, 2, 2]
@@ -200,5 +218,5 @@ if __name__ == "__main__":
 		#cluster_points = evaluateAlg.runBirch(no_clusters, dataset_xy)
 		#cluster_points = evaluateAlg.runGaussianMixture(no_clusters, dataset_xy)
 		#cluster_points = evaluateAlg.runSpectralClustering(no_clusters, dataset_xy)
-		cluster_points = evaluateAlg.runCURE(no_clusters, dataset_xy)
+		cluster_points = evaluateAlg.runCLARANS(no_clusters, dataset_xy)
 		evaluateAlg.evaluate_cluster(clase_points, cluster_points, filename)

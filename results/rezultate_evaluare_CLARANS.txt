@@ -1,0 +1,48 @@
+Rezultate evaluare pentru setul de date /home/iuliar/GITHUB_IULIA/MariaClust/datasets/aggregation.txt
+Purity: 0.874365482234
+Entropy: 0.182856294494
+RI: 0.868146079374
+ARI: 0.586346170569
+
+Rezultate evaluare pentru setul de date /home/iuliar/GITHUB_IULIA/MariaClust/datasets/compound.txt
+Purity: 0.749373433584
+Entropy: 0.315269218421
+RI: 0.816047656831
+ARI: 0.481123526223
+
+Rezultate evaluare pentru setul de date /home/iuliar/GITHUB_IULIA/MariaClust/datasets/d31.txt
+Purity: 0.687419354839
+Entropy: 0.184362281522
+RI: 0.970130427089
+ARI: 0.599998143728
+
+Rezultate evaluare pentru setul de date /home/iuliar/GITHUB_IULIA/MariaClust/datasets/flame.txt
+Purity: 0.729166666667
+Entropy: 0.842297295151
+RI: 0.603382147838
+ARI: 0.183407421523
+
+Rezultate evaluare pentru setul de date /home/iuliar/GITHUB_IULIA/MariaClust/datasets/jain.txt
+Purity: 0.836461126005
+Entropy: 0.616429178542
+RI: 0.725676727493
+ARI: 0.355739849968
+
+Rezultate evaluare pentru setul de date /home/iuliar/GITHUB_IULIA/MariaClust/datasets/pathbased.txt
+Purity: 0.66220735786
+Entropy: 0.5793002773
+RI: 0.709074992705
+ARI: 0.394594173676
+
+Rezultate evaluare pentru setul de date /home/iuliar/GITHUB_IULIA/MariaClust/datasets/r15.txt
+Purity: 0.796666666667
+Entropy: 0.139426338035
+RI: 0.960016694491
+ARI: 0.713137233142
+
+Rezultate evaluare pentru setul de date /home/iuliar/GITHUB_IULIA/MariaClust/datasets/spiral.txt
+Purity: 0.387820512821
+Entropy: 0.984946619694
+RI: 0.536276692225
+ARI: 0.00338330138132
+
