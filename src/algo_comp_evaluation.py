@@ -57,7 +57,36 @@ class EvaluateAlgorithms:
 			cluster_points[y_pred[point_id]].append(X[point_id])
 		#print(cluster_points)
 		return cluster_points
-		
+
+	def runBirch(self, k, X):
+		cluster_points = {}
+		for q in range(k):
+			cluster_points[q] = list()
+		y_pred = Birch(n_clusters=k).fit(X).predict(X)
+		for point_id in range(len(X)):
+			cluster_points[y_pred[point_id]].append(X[point_id])
+		#print(cluster_points)
+		return cluster_points
+
+	def runGaussianMixture(self, k, X):
+		cluster_points = {}
+		for q in range(k):
+			cluster_points[q] = list()
+		y_pred = GaussianMixture(n_components=k).fit(X).predict(X)
+		for point_id in range(len(X)):
+			cluster_points[y_pred[point_id]].append(X[point_id])
+		#print(cluster_points)
+		return cluster_points
+
+	def runSpectralClustering(self, k, X):
+		cluster_points = {}
+		for q in range(k):
+			cluster_points[q] = list()
+		y_pred = SpectralClustering(n_clusters=k).fit_predict(X)
+		for point_id in range(len(X)):
+			cluster_points[y_pred[point_id]].append(X[point_id])
+		#print(cluster_points)
+		return cluster_points
 
 	def evaluate_cluster(self, clase_points, cluster_points, filename):
 		
@@ -92,7 +121,7 @@ class EvaluateAlgorithms:
 		print('RI ', evaluation_measures.rand_index(evaluation_dict))
 		print('ARI ', evaluation_measures.adj_rand_index(evaluation_dict))
 
-		f = open("rezultate_evaluare_KMEANS.txt", "a")
+		f = open("rezultate_evaluare_SPECTRALCLUSTERING.txt", "a")
 		f.write("Rezultate evaluare pentru setul de date "+str(filename)+"\n")
 		f.write('Purity: '+str(evaluation_measures.purity(evaluation_dict))+"\n")
 		f.write('Entropy: '+str(evaluation_measures.entropy(evaluation_dict))+"\n")
@@ -151,5 +180,8 @@ if __name__ == "__main__":
 			clase_points[int(aux[no_dims])].append(tuple(list_of_coords))
 
 		evaluateAlg = EvaluateAlgorithms(no_dims)
-		cluster_points = evaluateAlg.runKMeans(no_clusters, dataset_xy)
+		#cluster_points = evaluateAlg.runKMeans(no_clusters, dataset_xy)
+		#cluster_points = evaluateAlg.runBirch(no_clusters, dataset_xy)
+		#cluster_points = evaluateAlg.runGaussianMixture(no_clusters, dataset_xy)
+		cluster_points = evaluateAlg.runSpectralClustering(no_clusters, dataset_xy)
 		evaluateAlg.evaluate_cluster(clase_points, cluster_points, filename)
