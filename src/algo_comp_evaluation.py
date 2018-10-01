@@ -88,6 +88,22 @@ class EvaluateAlgorithms:
 		#print(cluster_points)
 		return cluster_points
 
+	def runCURE(self, k, X):
+		cluster_points = {}
+		for q in range(k):
+			cluster_points[q] = list()
+		cure_instance = cure(data=X, number_cluster=k)
+		cure_instance.process()
+		clusters = cure_instance.get_clusters()
+		
+		for id_point in range(len(X)):
+			for cluster_id in range(len(clusters)):
+				point_ids_in_cluster = [int(point_id_in_cluster) for point_id_in_cluster in  clusters[cluster_id]]
+				if(id_point in point_ids_in_cluster):
+					cluster_points[cluster_id].append(X[id_point])
+
+		return cluster_points
+
 	def evaluate_cluster(self, clase_points, cluster_points, filename):
 		
 		evaluation_dict = {}
@@ -121,7 +137,7 @@ class EvaluateAlgorithms:
 		print('RI ', evaluation_measures.rand_index(evaluation_dict))
 		print('ARI ', evaluation_measures.adj_rand_index(evaluation_dict))
 
-		f = open("rezultate_evaluare_SPECTRALCLUSTERING.txt", "a")
+		f = open("rezultate_evaluare_CURE.txt", "a")
 		f.write("Rezultate evaluare pentru setul de date "+str(filename)+"\n")
 		f.write('Purity: '+str(evaluation_measures.purity(evaluation_dict))+"\n")
 		f.write('Entropy: '+str(evaluation_measures.entropy(evaluation_dict))+"\n")
@@ -183,5 +199,6 @@ if __name__ == "__main__":
 		#cluster_points = evaluateAlg.runKMeans(no_clusters, dataset_xy)
 		#cluster_points = evaluateAlg.runBirch(no_clusters, dataset_xy)
 		#cluster_points = evaluateAlg.runGaussianMixture(no_clusters, dataset_xy)
-		cluster_points = evaluateAlg.runSpectralClustering(no_clusters, dataset_xy)
+		#cluster_points = evaluateAlg.runSpectralClustering(no_clusters, dataset_xy)
+		cluster_points = evaluateAlg.runCURE(no_clusters, dataset_xy)
 		evaluateAlg.evaluate_cluster(clase_points, cluster_points, filename)
