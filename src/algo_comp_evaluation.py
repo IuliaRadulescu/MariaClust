@@ -92,6 +92,7 @@ class EvaluateAlgorithms:
 		cluster_points = {}
 		for q in range(k):
 			cluster_points[q] = list()
+
 		cure_instance = cure(data=X, number_cluster=k)
 		cure_instance.process()
 		clusters = cure_instance.get_clusters()
@@ -103,6 +104,36 @@ class EvaluateAlgorithms:
 					cluster_points[cluster_id].append(X[id_point])
 
 		return cluster_points
+
+	def runCLARANS(self, k, X):
+		cluster_points = {}
+		for q in range(k):
+			cluster_points[q] = list()
+
+		clarans_instance = clarans(data=X, number_clusters=k, numlocal=5, maxneighbor=5);
+		clarans_instance.process();
+		clusters = clarans_instance.get_clusters();
+		
+		for id_point in range(len(X)):
+			for cluster_id in range(len(clusters)):
+				point_ids_in_cluster = [int(point_id_in_cluster) for point_id_in_cluster in  clusters[cluster_id]]
+				if(id_point in point_ids_in_cluster):
+					cluster_points[cluster_id].append(X[id_point])
+
+		return cluster_points
+
+	def runOPTICS(self, k, X, mean_dist):
+		cluster_points = {}
+		for q in range(k):
+			cluster_points[q] = list()
+		#max_eps sa fie distanta medie intre doua puncte
+		y_pred = KMeans(min_samples=3, max_eps=mean_dist).fit_predict(X)
+		#print(y_pred)
+		for point_id in range(len(X)):
+			cluster_points[y_pred[point_id]].append(X[point_id])
+		#print(cluster_points)
+		return cluster_points
+
 
 	def evaluate_cluster(self, clase_points, cluster_points, filename):
 		
@@ -137,7 +168,7 @@ class EvaluateAlgorithms:
 		print('RI ', evaluation_measures.rand_index(evaluation_dict))
 		print('ARI ', evaluation_measures.adj_rand_index(evaluation_dict))
 
-		f = open("rezultate_evaluare_CURE.txt", "a")
+		f = open("rezultate_evaluare_OPTICS.txt", "a")
 		f.write("Rezultate evaluare pentru setul de date "+str(filename)+"\n")
 		f.write('Purity: '+str(evaluation_measures.purity(evaluation_dict))+"\n")
 		f.write('Entropy: '+str(evaluation_measures.entropy(evaluation_dict))+"\n")
@@ -151,6 +182,22 @@ class EvaluateAlgorithms:
 		g = random.randint(0, 255)
 		r = random.randint(0, 255)
 		return [round(b/255,2), round(g/255,2), round(r/255,2)]
+
+	def DistFunc(self, x, y):
+
+		sum_powers = 0
+		for dim in range(self.no_dims):
+			sum_powers = math.pow(x[dim]-y[dim], 2) + sum_powers
+		return math.sqrt(sum_powers)
+
+	def get_mean_dist(self, X):
+		distances = list()
+		for id_x in range(len(X)-1):
+			for id_y in range(id_x+1, len(X)):
+				dist = self.DistFunc(X[id_x], X[id_y])
+				distances.append(dist)
+		return sum(distances)/len(distances)
+
 
 	def plot_clusters(self, cluster_points):
 		for cluster_id in cluster_points:
@@ -200,5 +247,8 @@ if __name__ == "__main__":
 		#cluster_points = evaluateAlg.runBirch(no_clusters, dataset_xy)
 		#cluster_points = evaluateAlg.runGaussianMixture(no_clusters, dataset_xy)
 		#cluster_points = evaluateAlg.runSpectralClustering(no_clusters, dataset_xy)
-		cluster_points = evaluateAlg.runCURE(no_clusters, dataset_xy)
+		#cluster_points = evaluateAlg.runCURE(no_clusters, dataset_xy)
+		#cluster_points = evaluateAlg.runCLARANS(no_clusters, dataset_xy)
+		mean_dist = evaluateAlg.get_mean_dist(dataset_xy)
+		cluster_points = evaluateAlg.runOPTICS(no_clusters, dataset_xy, mean_dist)
 		evaluateAlg.evaluate_cluster(clase_points, cluster_points, filename)
