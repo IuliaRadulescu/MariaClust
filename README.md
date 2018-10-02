@@ -15,13 +15,12 @@
 Run examples: 
 * python src/mariaClust.py datasets/aggregation.txt 7 8 0.8 1 2
 * python src/mariaClust.py datasets/spiral.txt 3 3 1 3 2
-* python src/mariaClust.py datasets/r15.txt 15 8 0.5 1 2
+* python src/mariaClust.py datasets/r15.txt 15 3 0.5 1 2
 * python src/mariaClust.py datasets/jain.txt 2 3 1 2 2
 * python src/mariaClust.py datasets/pathbased.txt 3 2 0.73 2 2
 * python src/mariaClust.py datasets/flame.txt 2 2 1 3 2
 * python src/mariaClust.py datasets/compound.txt 6 3 1 3 2
 * python src/mariaClust.py datasets/d31.txt 31 7 0.1 1 2
-* python src/mariaClust.py datasets/dim032_merged.txt 16 16 1 1 32
 -------------------------------------------------------------------------------------------------
 
 ## Datasets:
