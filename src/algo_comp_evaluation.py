@@ -5,8 +5,10 @@ import sys
 import collections
 import matplotlib.pyplot as plt
 import random
+import math
 
 from sklearn.cluster import DBSCAN
+from sklearn.cluster import OPTICS
 from sklearn.cluster import KMeans
 from sklearn.cluster import Birch
 from sklearn.mixture import GaussianMixture
@@ -122,15 +124,18 @@ class EvaluateAlgorithms:
 
 		return cluster_points
 
-	def runOPTICS(self, k, X, mean_dist):
+	def runOPTICS(self, X, mean_dist):
 		cluster_points = {}
-		for q in range(k):
+		y_pred = OPTICS(min_samples=3, max_eps=mean_dist).fit_predict(X)
+
+		nr_obtained_clusters = max(y_pred)+1
+		for q in range(nr_obtained_clusters): #aici numarul de clustere e valoarea maxima din y_pred
 			cluster_points[q] = list()
-		#max_eps sa fie distanta medie intre doua puncte
-		y_pred = KMeans(min_samples=3, max_eps=mean_dist).fit_predict(X)
-		#print(y_pred)
+
 		for point_id in range(len(X)):
-			cluster_points[y_pred[point_id]].append(X[point_id])
+			#eliminam zgomotele
+			if(y_pred[point_id]!=-1):
+				cluster_points[y_pred[point_id]].append(X[point_id])
 		#print(cluster_points)
 		return cluster_points
 
@@ -250,5 +255,5 @@ if __name__ == "__main__":
 		#cluster_points = evaluateAlg.runCURE(no_clusters, dataset_xy)
 		#cluster_points = evaluateAlg.runCLARANS(no_clusters, dataset_xy)
 		mean_dist = evaluateAlg.get_mean_dist(dataset_xy)
-		cluster_points = evaluateAlg.runOPTICS(no_clusters, dataset_xy, mean_dist)
+		cluster_points = evaluateAlg.runOPTICS(dataset_xy, mean_dist)
 		evaluateAlg.evaluate_cluster(clase_points, cluster_points, filename)
