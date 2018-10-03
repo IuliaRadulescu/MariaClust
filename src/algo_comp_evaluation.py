@@ -204,19 +204,22 @@ class EvaluateAlgorithms:
 		return sum(distances)/len(distances)
 
 
-	def plot_clusters(self, cluster_points):
+	def plot_clusters(self, cluster_points, algoritm, set_de_date):
+		fig, ax = plt.subplots(nrows=1, ncols=1)
 		for cluster_id in cluster_points:
 			color = self.random_color_scaled()
 			#print(color)
 			for point in cluster_points[cluster_id]:
-				plt.scatter(point[0], point[1], color=color)
+				ax.scatter(point[0], point[1], color=color)
 
-		plt.show()
+		fig.savefig('F:\\IULIA\\GITHUB_IULIA\\MariaClust\\results\\'+str(algoritm)+"_"+str(set_de_date)+'.png')   # save the figure to file
+		plt.close(fig)
 
 if __name__ == "__main__":
 	
 	home_path = "F:\\IULIA\\GITHUB_IULIA\\MariaClust\\datasets\\"
 	filenames = [home_path+"aggregation.txt", home_path+"compound.txt", home_path+"d31.txt", home_path+"flame.txt", home_path+"jain.txt", home_path+"pathbased.txt", home_path+"r15.txt", home_path+"spiral.txt"]
+	dataset_names = ["Aggregation", "Compound", "D31", "Flame", "Jain", "Pathbased", "R15", "Spiral"]
 	no_clusters_all = [7, 6, 31, 2, 2, 3, 15, 3]
 	no_dims_all = [2, 2, 2, 2, 2, 2, 2, 2]
 
@@ -248,12 +251,25 @@ if __name__ == "__main__":
 			clase_points[int(aux[no_dims])].append(tuple(list_of_coords))
 
 		evaluateAlg = EvaluateAlgorithms(no_dims)
-		#cluster_points = evaluateAlg.runKMeans(no_clusters, dataset_xy)
-		#cluster_points = evaluateAlg.runBirch(no_clusters, dataset_xy)
-		#cluster_points = evaluateAlg.runGaussianMixture(no_clusters, dataset_xy)
-		#cluster_points = evaluateAlg.runSpectralClustering(no_clusters, dataset_xy)
-		#cluster_points = evaluateAlg.runCURE(no_clusters, dataset_xy)
-		#cluster_points = evaluateAlg.runCLARANS(no_clusters, dataset_xy)
-		mean_dist = evaluateAlg.get_mean_dist(dataset_xy)
+		'''cluster_points = evaluateAlg.runKMeans(no_clusters, dataset_xy)
+		evaluateAlg.plot_clusters(cluster_points, "KMEANS", dataset_names[nr_crt])
+		
+		cluster_points = evaluateAlg.runBirch(no_clusters, dataset_xy)
+		evaluateAlg.plot_clusters(cluster_points, "BIRCH", dataset_names[nr_crt])
+
+		cluster_points = evaluateAlg.runGaussianMixture(no_clusters, dataset_xy)
+		evaluateAlg.plot_clusters(cluster_points, "GAUSSIANMIXTURE", dataset_names[nr_crt])
+
+		cluster_points = evaluateAlg.runSpectralClustering(no_clusters, dataset_xy)
+		evaluateAlg.plot_clusters(cluster_points, "SPECTRALCLUSTERING", dataset_names[nr_crt])
+
+		cluster_points = evaluateAlg.runCURE(no_clusters, dataset_xy)
+		evaluateAlg.plot_clusters(cluster_points, "CURE", dataset_names[nr_crt])'''
+		
+		cluster_points = evaluateAlg.runCLARANS(no_clusters, dataset_xy)
+		evaluateAlg.plot_clusters(cluster_points, "CLARANS", dataset_names[nr_crt])
+
+		'''mean_dist = evaluateAlg.get_mean_dist(dataset_xy)
 		cluster_points = evaluateAlg.runOPTICS(dataset_xy, mean_dist)
-		evaluateAlg.evaluate_cluster(clase_points, cluster_points, filename)
+		evaluateAlg.plot_clusters(cluster_points, "OPTICS", dataset_names[nr_crt])'''
+		#evaluateAlg.evaluate_cluster(clase_points, cluster_points, filename)
