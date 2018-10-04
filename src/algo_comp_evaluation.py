@@ -251,7 +251,7 @@ if __name__ == "__main__":
 			clase_points[int(aux[no_dims])].append(tuple(list_of_coords))
 
 		evaluateAlg = EvaluateAlgorithms(no_dims)
-		'''cluster_points = evaluateAlg.runKMeans(no_clusters, dataset_xy)
+		cluster_points = evaluateAlg.runKMeans(no_clusters, dataset_xy)
 		evaluateAlg.plot_clusters(cluster_points, "KMEANS", dataset_names[nr_crt])
 		
 		cluster_points = evaluateAlg.runBirch(no_clusters, dataset_xy)
@@ -264,12 +264,12 @@ if __name__ == "__main__":
 		evaluateAlg.plot_clusters(cluster_points, "SPECTRALCLUSTERING", dataset_names[nr_crt])
 
 		cluster_points = evaluateAlg.runCURE(no_clusters, dataset_xy)
-		evaluateAlg.plot_clusters(cluster_points, "CURE", dataset_names[nr_crt])'''
+		evaluateAlg.plot_clusters(cluster_points, "CURE", dataset_names[nr_crt])
 		
 		cluster_points = evaluateAlg.runCLARANS(no_clusters, dataset_xy)
 		evaluateAlg.plot_clusters(cluster_points, "CLARANS", dataset_names[nr_crt])
 
-		'''mean_dist = evaluateAlg.get_mean_dist(dataset_xy)
+		mean_dist = evaluateAlg.get_mean_dist(dataset_xy)
 		cluster_points = evaluateAlg.runOPTICS(dataset_xy, mean_dist)
-		evaluateAlg.plot_clusters(cluster_points, "OPTICS", dataset_names[nr_crt])'''
+		evaluateAlg.plot_clusters(cluster_points, "OPTICS", dataset_names[nr_crt])
 		#evaluateAlg.evaluate_cluster(clase_points, cluster_points, filename)
