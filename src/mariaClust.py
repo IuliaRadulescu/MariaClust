@@ -621,23 +621,14 @@ class MariaClust:
 		for dim in range(no_dims):
 			each_dimension_values[dim] = [dataset_xy[q][dim] for q in range(len(dataset_xy))]
 
-		'''for q in range(len(dataset_xy)):
-			if(q not in outliers_iqr_pdf):
-				dataset_xy_aux.append(dataset_xy[q])
-				for dim in range(no_dims):
-					each_dimension_values_aux[dim].append(dataset_xy[q][dim])
-
-		dataset_xy = dataset_xy_aux
-		each_dimension_values = each_dimension_values_aux'''
-
 		#recalculez pdf, ca altfel se produc erori
 
 		self.pdf = self.compute_pdf_kde(dataset_xy, each_dimension_values) #calculez functia densitate probabilitate din nou
 
-		if(self.no_dims==2):
+		'''if(self.no_dims==2):
 			#coturul cu albastru este plotat doar pentru 2 dimensiuni
 			f,xmin, xmax, ymin, ymax, xx, yy = self.evaluate_pdf_kde(dataset_xy, each_dimension_values) #pentru afisare zone dense albastre
-			plt.contourf(xx, yy, f, cmap='Blues') #pentru afisare zone dense albastre
+			plt.contourf(xx, yy, f, cmap='Blues') #pentru afisare zone dense albastre'''
 			
 		
 		'''
@@ -678,13 +669,13 @@ class MariaClust:
 		
 		final_partitions, noise = self.split_partitions(partition_dict) #functie care scindeaza partitiile
 		
-		if(self.no_dims==2):
+		'''if(self.no_dims==2):
 			for k in final_partitions:
 				color = self.random_color_scaled()
 				for pixel in final_partitions[k]:
 					plt.scatter(pixel[0], pixel[1], color=color)
 
-			plt.show()
+			plt.show()'''
 
 
 		intermediary_centroids, cluster_points = self.agglomerative_clustering2(final_partitions, self.no_clusters, self.cluster_distance) #paramateri: partitiile rezultate, numarul de clustere
@@ -703,7 +694,7 @@ class MariaClust:
 			cluster_points[closest_centroid].append(noise_point)
 
 		self.evaluate_cluster(clase_points, cluster_points)
-		print("Evaluation")
+		'''print("Evaluation")
 		print("==============================")
 		
 		if(self.no_dims==2):
@@ -714,7 +705,20 @@ class MariaClust:
 				for point in cluster_points[k]:
 					plt.scatter(point[0], point[1], color=c)
 
-			plt.show()
+			plt.show()'''
+
+		return cluster_points
+
+	def plot_clusters(self, cluster_points, set_de_date):
+		fig, ax = plt.subplots(nrows=1, ncols=1)
+		for cluster_id in cluster_points:
+			color = self.random_color_scaled()
+			#print(color)
+			for point in cluster_points[cluster_id]:
+				ax.scatter(point[0], point[1], color=color)
+
+		fig.savefig('/home/iuliar/GITHUB_MARIACLUST/MariaClust/results/poze/MARIACLUST'+'_'+str(set_de_date)+'.png')   # save the figure to file
+		plt.close(fig)
 
 
 '''
@@ -760,6 +764,6 @@ if __name__ == "__main__":
 		clase_points[int(aux[no_dims])].append(tuple(list_of_coords))
 
 	mariaClustInstance = MariaClust(no_clusters, no_bins, expand_factor, cluster_distance, no_dims)
-	mariaClustInstance.cluster_dataset(dataset_xy, dataset_xy_validate, each_dimension_values, clase_points)
-
-
+	cluster_points = mariaClustInstance.cluster_dataset(dataset_xy, dataset_xy_validate, each_dimension_values, clase_points)
+	set_de_date = filename.split("/")[1].split(".")[0].title()
+	mariaClustInstance.plot_clusters(cluster_points, set_de_date)

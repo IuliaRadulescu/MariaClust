@@ -8,7 +8,7 @@ import random
 import math
 
 from sklearn.cluster import DBSCAN
-from sklearn.cluster import OPTICS
+#from sklearn.cluster import OPTICS
 from sklearn.cluster import KMeans
 from sklearn.cluster import Birch
 from sklearn.mixture import GaussianMixture
@@ -139,8 +139,24 @@ class EvaluateAlgorithms:
 		#print(cluster_points)
 		return cluster_points
 
+	def runAGGLOMERATIVE(self, k, X, type_link_param):
+		cluster_points = {}
+		for q in range(k):
+			cluster_points[q] = list()
 
-	def evaluate_cluster(self, clase_points, cluster_points, filename):
+		agglo_instance = agglomerative(data=X, number_clusters=k, link=type_link_param);
+		agglo_instance.process();
+		clusters = agglo_instance.get_clusters();
+		for id_point in range(len(X)):
+			for cluster_id in range(len(clusters)):
+				point_ids_in_cluster = [int(point_id_in_cluster) for point_id_in_cluster in  clusters[cluster_id]]
+				if(id_point in point_ids_in_cluster):
+					cluster_points[cluster_id].append(X[id_point])
+
+		return cluster_points
+
+
+	def evaluate_cluster(self, clase_points, cluster_points, filename, nume_algoritm):
 		
 		evaluation_dict = {}
 		point2cluster = {}
@@ -173,7 +189,7 @@ class EvaluateAlgorithms:
 		print('RI ', evaluation_measures.rand_index(evaluation_dict))
 		print('ARI ', evaluation_measures.adj_rand_index(evaluation_dict))
 
-		f = open("rezultate_evaluare_OPTICS.txt", "a")
+		f = open("rezultate_evaluare_"+nume_algoritm+".txt", "a")
 		f.write("Rezultate evaluare pentru setul de date "+str(filename)+"\n")
 		f.write('Purity: '+str(evaluation_measures.purity(evaluation_dict))+"\n")
 		f.write('Entropy: '+str(evaluation_measures.entropy(evaluation_dict))+"\n")
@@ -212,16 +228,22 @@ class EvaluateAlgorithms:
 			for point in cluster_points[cluster_id]:
 				ax.scatter(point[0], point[1], color=color)
 
-		fig.savefig('F:\\IULIA\\GITHUB_IULIA\\MariaClust\\results\\'+str(algoritm)+"_"+str(set_de_date)+'.png')   # save the figure to file
+		fig.savefig('/home/iuliar/GITHUB_MARIACLUST/MariaClust/results/poze/'+str(algoritm)+"_"+str(set_de_date)+'.png')   # save the figure to file
 		plt.close(fig)
 
 if __name__ == "__main__":
 	
-	home_path = "F:\\IULIA\\GITHUB_IULIA\\MariaClust\\datasets\\"
-	filenames = [home_path+"aggregation.txt", home_path+"compound.txt", home_path+"d31.txt", home_path+"flame.txt", home_path+"jain.txt", home_path+"pathbased.txt", home_path+"r15.txt", home_path+"spiral.txt"]
+	home_path = "/home/iuliar/GITHUB_MARIACLUST/MariaClust/datasets/"
+	'''filenames = [home_path+"aggregation.txt", home_path+"compound.txt", home_path+"d31.txt", home_path+"flame.txt", home_path+"jain.txt", home_path+"pathbased.txt", home_path+"r15.txt", home_path+"spiral.txt"]
 	dataset_names = ["Aggregation", "Compound", "D31", "Flame", "Jain", "Pathbased", "R15", "Spiral"]
 	no_clusters_all = [7, 6, 31, 2, 2, 3, 15, 3]
-	no_dims_all = [2, 2, 2, 2, 2, 2, 2, 2]
+	no_dims_all = [2, 2, 2, 2, 2, 2, 2, 2]'''
+
+	#multidimensional
+	filenames = [home_path+"dim032.txt", home_path+"dim064.txt", home_path+"dim128.txt", home_path+"dim256.txt", home_path+"dim512.txt"]
+	dataset_names = ["dim032", "dim064", "dim128", "dim256", "dim512"]
+	no_clusters_all = [16, 16, 16, 16, 16]
+	no_dims_all = [32, 64, 128, 256, 512]
 
 	for nr_crt in range(len(filenames)):
 
@@ -252,24 +274,38 @@ if __name__ == "__main__":
 
 		evaluateAlg = EvaluateAlgorithms(no_dims)
 		cluster_points = evaluateAlg.runKMeans(no_clusters, dataset_xy)
-		evaluateAlg.plot_clusters(cluster_points, "KMEANS", dataset_names[nr_crt])
+		#evaluateAlg.plot_clusters(cluster_points, "KMEANS", dataset_names[nr_crt])
+		evaluateAlg.evaluate_cluster(clase_points, cluster_points, filename, "KMEANS")
 		
 		cluster_points = evaluateAlg.runBirch(no_clusters, dataset_xy)
-		evaluateAlg.plot_clusters(cluster_points, "BIRCH", dataset_names[nr_crt])
+		#evaluateAlg.plot_clusters(cluster_points, "BIRCH", dataset_names[nr_crt])
+		evaluateAlg.evaluate_cluster(clase_points, cluster_points, filename, "BIRCH")
 
 		cluster_points = evaluateAlg.runGaussianMixture(no_clusters, dataset_xy)
-		evaluateAlg.plot_clusters(cluster_points, "GAUSSIANMIXTURE", dataset_names[nr_crt])
+		#evaluateAlg.plot_clusters(cluster_points, "GAUSSIANMIXTURE", dataset_names[nr_crt])
+		evaluateAlg.evaluate_cluster(clase_points, cluster_points, filename, "GAUSSIANMIXTURE")
 
 		cluster_points = evaluateAlg.runSpectralClustering(no_clusters, dataset_xy)
-		evaluateAlg.plot_clusters(cluster_points, "SPECTRALCLUSTERING", dataset_names[nr_crt])
+		#evaluateAlg.plot_clusters(cluster_points, "SPECTRALCLUSTERING", dataset_names[nr_crt])
+		evaluateAlg.evaluate_cluster(clase_points, cluster_points, filename, "SPECTRALCLUSTERING")
 
 		cluster_points = evaluateAlg.runCURE(no_clusters, dataset_xy)
-		evaluateAlg.plot_clusters(cluster_points, "CURE", dataset_names[nr_crt])
+		#evaluateAlg.plot_clusters(cluster_points, "CURE", dataset_names[nr_crt])
+		evaluateAlg.evaluate_cluster(clase_points, cluster_points, filename, "CURE")
 		
 		cluster_points = evaluateAlg.runCLARANS(no_clusters, dataset_xy)
-		evaluateAlg.plot_clusters(cluster_points, "CLARANS", dataset_names[nr_crt])
+		#evaluateAlg.plot_clusters(cluster_points, "CLARANS", dataset_names[nr_crt])
+		evaluateAlg.evaluate_cluster(clase_points, cluster_points, filename, "CLARANS")
 
 		mean_dist = evaluateAlg.get_mean_dist(dataset_xy)
 		cluster_points = evaluateAlg.runOPTICS(dataset_xy, mean_dist)
-		evaluateAlg.plot_clusters(cluster_points, "OPTICS", dataset_names[nr_crt])
-		#evaluateAlg.evaluate_cluster(clase_points, cluster_points, filename)
+		#evaluateAlg.plot_clusters(cluster_points, "OPTICS", dataset_names[nr_crt])
+		evaluateAlg.evaluate_cluster(clase_points, cluster_points, filename, "OPTICS")
+
+		if(nr_crt==7 or nr_crt==3 or nr_crt==1):
+			cluster_points = evaluateAlg.runAGGLOMERATIVE(no_clusters, dataset_xy, type_link.SINGLE_LINK)
+			
+		else:
+			cluster_points = evaluateAlg.runAGGLOMERATIVE(no_clusters, dataset_xy, type_link.AVERAGE_LINK)
+		evaluateAlg.evaluate_cluster(clase_points, cluster_points, filename, "HIERARCHICALAGG")
+		#evaluateAlg.plot_clusters(cluster_points, "HIERARCHICALAGG", dataset_names[nr_crt])
