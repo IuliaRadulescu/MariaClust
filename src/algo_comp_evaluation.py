@@ -156,7 +156,7 @@ class EvaluateAlgorithms:
 		return cluster_points
 
 
-	def evaluate_cluster(self, clase_points, cluster_points, filename, nume_algoritm):
+	def evaluate_cluster(self, clase_points, cluster_points, filename, nume_algoritm, nume_set_date):
 		
 		evaluation_dict = {}
 		point2cluster = {}
@@ -189,7 +189,7 @@ class EvaluateAlgorithms:
 		print('RI ', evaluation_measures.rand_index(evaluation_dict))
 		print('ARI ', evaluation_measures.adj_rand_index(evaluation_dict))
 
-		f = open("rezultate_evaluare_"+nume_algoritm+".txt", "a")
+		f = open("rezultate_evaluare_"+nume_algoritm+"_"+nume_set_date+".txt", "a")
 		f.write("Rezultate evaluare pentru setul de date "+str(filename)+"\n")
 		f.write('Purity: '+str(evaluation_measures.purity(evaluation_dict))+"\n")
 		f.write('Entropy: '+str(evaluation_measures.entropy(evaluation_dict))+"\n")
@@ -275,37 +275,37 @@ if __name__ == "__main__":
 		evaluateAlg = EvaluateAlgorithms(no_dims)
 		cluster_points = evaluateAlg.runKMeans(no_clusters, dataset_xy)
 		#evaluateAlg.plot_clusters(cluster_points, "KMEANS", dataset_names[nr_crt])
-		evaluateAlg.evaluate_cluster(clase_points, cluster_points, filename, "KMEANS")
+		evaluateAlg.evaluate_cluster(clase_points, cluster_points, filename, "KMEANS", dataset_names[nr_crt])
 		
 		cluster_points = evaluateAlg.runBirch(no_clusters, dataset_xy)
 		#evaluateAlg.plot_clusters(cluster_points, "BIRCH", dataset_names[nr_crt])
-		evaluateAlg.evaluate_cluster(clase_points, cluster_points, filename, "BIRCH")
+		evaluateAlg.evaluate_cluster(clase_points, cluster_points, filename, "BIRCH", dataset_names[nr_crt])
 
 		cluster_points = evaluateAlg.runGaussianMixture(no_clusters, dataset_xy)
 		#evaluateAlg.plot_clusters(cluster_points, "GAUSSIANMIXTURE", dataset_names[nr_crt])
-		evaluateAlg.evaluate_cluster(clase_points, cluster_points, filename, "GAUSSIANMIXTURE")
+		evaluateAlg.evaluate_cluster(clase_points, cluster_points, filename, "GAUSSIANMIXTURE", dataset_names[nr_crt])
 
 		cluster_points = evaluateAlg.runSpectralClustering(no_clusters, dataset_xy)
 		#evaluateAlg.plot_clusters(cluster_points, "SPECTRALCLUSTERING", dataset_names[nr_crt])
-		evaluateAlg.evaluate_cluster(clase_points, cluster_points, filename, "SPECTRALCLUSTERING")
+		evaluateAlg.evaluate_cluster(clase_points, cluster_points, filename, "SPECTRALCLUSTERING", dataset_names[nr_crt])
 
 		cluster_points = evaluateAlg.runCURE(no_clusters, dataset_xy)
 		#evaluateAlg.plot_clusters(cluster_points, "CURE", dataset_names[nr_crt])
-		evaluateAlg.evaluate_cluster(clase_points, cluster_points, filename, "CURE")
+		evaluateAlg.evaluate_cluster(clase_points, cluster_points, filename, "CURE", dataset_names[nr_crt])
 		
 		cluster_points = evaluateAlg.runCLARANS(no_clusters, dataset_xy)
 		#evaluateAlg.plot_clusters(cluster_points, "CLARANS", dataset_names[nr_crt])
-		evaluateAlg.evaluate_cluster(clase_points, cluster_points, filename, "CLARANS")
+		evaluateAlg.evaluate_cluster(clase_points, cluster_points, filename, "CLARANS", dataset_names[nr_crt])
 
-		mean_dist = evaluateAlg.get_mean_dist(dataset_xy)
+		'''mean_dist = evaluateAlg.get_mean_dist(dataset_xy)
 		cluster_points = evaluateAlg.runOPTICS(dataset_xy, mean_dist)
 		#evaluateAlg.plot_clusters(cluster_points, "OPTICS", dataset_names[nr_crt])
-		evaluateAlg.evaluate_cluster(clase_points, cluster_points, filename, "OPTICS")
+		evaluateAlg.evaluate_cluster(clase_points, cluster_points, filename, "OPTICS")'''
 
 		if(nr_crt==7 or nr_crt==3 or nr_crt==1):
 			cluster_points = evaluateAlg.runAGGLOMERATIVE(no_clusters, dataset_xy, type_link.SINGLE_LINK)
 			
 		else:
 			cluster_points = evaluateAlg.runAGGLOMERATIVE(no_clusters, dataset_xy, type_link.AVERAGE_LINK)
-		evaluateAlg.evaluate_cluster(clase_points, cluster_points, filename, "HIERARCHICALAGG")
+		evaluateAlg.evaluate_cluster(clase_points, cluster_points, filename, "HIERARCHICALAGG", dataset_names[nr_crt])
 		#evaluateAlg.plot_clusters(cluster_points, "HIERARCHICALAGG", dataset_names[nr_crt])
