@@ -5,9 +5,9 @@ import sys
 import math
 
 
-filenames = ["rezultate_evaluare_MariaClust.txt", "rezultate_evaluare_BIRCH.txt", "rezultate_evaluare_CLARANS.txt", "rezultate_evaluare_CURE.txt", "rezultate_evaluare_GAUSSIANMIXTURE.txt", "rezultate_evaluare_HIERARCHICALAGG.txt", "rezultate_evaluare_KMEANS.txt", "rezultate_evaluare_OPTICS.txt", "rezultate_evaluare_SPECTRALCLUSTERING.txt"]
-names = ["MariaClust", "Birch", "Clarans", "Cure", "Gaussian Mixture", "Hierarchical", "KMeans", "Optics", "Spectral Clustering"]
-datasets = ["Aggregation", "Compound", "D31", "Flame", "Jain", "pathbased", "R15", "Spiral", "Dim032", "Dim064", "Dim128", "Dim256", "Dim512"]
+filenames = ["rezultate_evaluare_MariaClust.txt", "rezultate_evaluare_BIRCH.txt", "rezultate_evaluare_CLARANS.txt", "rezultate_evaluare_CURE.txt", "rezultate_evaluare_GAUSSIANMIXTURE.txt", "rezultate_evaluare_HIERARCHICALAGG.txt", "rezultate_evaluare_KMEANS.txt", "rezultate_evaluare_DBSCAN.txt", "rezultate_evaluare_SPECTRALCLUSTERING.txt"]
+names = ["MariaClust", "Birch", "Clarans", "Cure", "Gaussian Mixture", "Hierarchical", "KMeans", "DBSCAN", "Spectral Clustering"]
+datasets = ["Aggregation", "Compound", "D31", "Flame", "Jain", "Pathbased", "R15", "Spiral", "Dim032", "Dim064", "Dim128", "Dim256", "Dim512"]
 file_stats = list()
 
 for filename_id in range(len(filenames)):
@@ -45,7 +45,7 @@ f_latex.write("\\tiny\n")
 f_latex.write("\\caption{Purity evaluation results}\n")
 f_latex.write("\\begin{tabular}{|l|l|l|l|l|l|l|l|l|l|}\n")
 f_latex.write("\\hline\n")
-f_latex.write("\\textbf{Dataset} & \\textbf{MariaClust} & \\textbf{Birch} & \\textbf{Clarans} & \textbf{Cure} & \\textbf{\\begin{tabular}[c]{@{}l@{}}Gaussian\\\\ Mixture\end{tabular}} & \\textbf{Hierarchical} & \textbf{K-Means} & \\textbf{Optics} & \\textbf{\\begin{tabular}[c]{@{}l@{}}Sectral \\\\ Custering\end{tabular}} \\\\ \\hline\n")
+f_latex.write("\\textbf{Dataset} & \\textbf{MariaClust} & \\textbf{Birch} & \\textbf{Clarans} & \\textbf{Cure} & \\textbf{\\begin{tabular}[c]{@{}l@{}}Gaussian\\\\ Mixture\end{tabular}} & \\textbf{Hierarchical} & \\textbf{KMeans} & \\textbf{DBSCAN} & \\textbf{\\begin{tabular}[c]{@{}l@{}}Spectral \\\\ Custering\end{tabular}} \\\\ \\hline\n")
 
 for dataset_id in range(len(datasets)):
 	table_line = datasets[dataset_id]+"\t"
@@ -66,7 +66,7 @@ f_latex.write("\\tiny\n")
 f_latex.write("\\caption{Entropy evaluation results}\n")
 f_latex.write("\\begin{tabular}{|l|l|l|l|l|l|l|l|l|l|}\n")
 f_latex.write("\\hline\n")
-f_latex.write("\\textbf{Dataset} & \\textbf{MariaClust} & \\textbf{Birch} & \\textbf{Clarans} & \textbf{Cure} & \\textbf{\\begin{tabular}[c]{@{}l@{}}Gaussian\\\\ Mixture\end{tabular}} & \\textbf{Hierarchical} & \textbf{K-Means} & \\textbf{Optics} & \\textbf{\\begin{tabular}[c]{@{}l@{}}Sectral \\\\ Custering\end{tabular}} \\\\ \\hline\n")
+f_latex.write("\\textbf{Dataset} & \\textbf{MariaClust} & \\textbf{Birch} & \\textbf{Clarans} & \\textbf{Cure} & \\textbf{\\begin{tabular}[c]{@{}l@{}}Gaussian\\\\ Mixture\end{tabular}} & \\textbf{Hierarchical} & \\textbf{KMeans} & \\textbf{DBSCAN} & \\textbf{\\begin{tabular}[c]{@{}l@{}}Spectral \\\\ Custering\end{tabular}} \\\\ \\hline\n")
 
 for dataset_id in range(len(datasets)):
 	table_line = datasets[dataset_id]+"\t"
@@ -87,7 +87,7 @@ f_latex.write("\\tiny\n")
 f_latex.write("\\caption{Rand Index evaluation results}\n")
 f_latex.write("\\begin{tabular}{|l|l|l|l|l|l|l|l|l|l|}\n")
 f_latex.write("\\hline\n")
-f_latex.write("\\textbf{Dataset} & \\textbf{MariaClust} & \\textbf{Birch} & \\textbf{Clarans} & \textbf{Cure} & \\textbf{\\begin{tabular}[c]{@{}l@{}}Gaussian\\\\ Mixture\end{tabular}} & \\textbf{Hierarchical} & \textbf{K-Means} & \\textbf{Optics} & \\textbf{\\begin{tabular}[c]{@{}l@{}}Sectral \\\\ Custering\end{tabular}} \\\\ \\hline\n")
+f_latex.write("\\textbf{Dataset} & \\textbf{MariaClust} & \\textbf{Birch} & \\textbf{Clarans} & \\textbf{Cure} & \\textbf{\\begin{tabular}[c]{@{}l@{}}Gaussian\\\\ Mixture\end{tabular}} & \\textbf{Hierarchical} & \\textbf{KMeans} & \\textbf{DBSCAN} & \\textbf{\\begin{tabular}[c]{@{}l@{}}Spectral \\\\ Custering\end{tabular}} \\\\ \\hline\n")
 
 for dataset_id in range(len(datasets)):
 	table_line = datasets[dataset_id]+"\t"
@@ -108,7 +108,7 @@ f_latex.write("\\tiny\n")
 f_latex.write("\\caption{Adjusted Rand Index evaluation results}\n")
 f_latex.write("\\begin{tabular}{|l|l|l|l|l|l|l|l|l|l|}\n")
 f_latex.write("\\hline\n")
-f_latex.write("\\textbf{Dataset} & \\textbf{MariaClust} & \\textbf{Birch} & \\textbf{Clarans} & \textbf{Cure} & \\textbf{\\begin{tabular}[c]{@{}l@{}}Gaussian\\\\ Mixture\end{tabular}} & \\textbf{Hierarchical} & \textbf{K-Means} & \\textbf{Optics} & \\textbf{\\begin{tabular}[c]{@{}l@{}}Sectral \\\\ Custering\end{tabular}} \\\\ \\hline\n")
+f_latex.write("\\textbf{Dataset} & \\textbf{MariaClust} & \\textbf{Birch} & \\textbf{Clarans} & \\textbf{Cure} & \\textbf{\\begin{tabular}[c]{@{}l@{}}Gaussian\\\\ Mixture\end{tabular}} & \\textbf{Hierarchical} & \\textbf{KMeans} & \\textbf{DBSCAN} & \\textbf{\\begin{tabular}[c]{@{}l@{}}Spectral \\\\ Custering\end{tabular}} \\\\ \\hline\n")
 
 for dataset_id in range(len(datasets)):
 	table_line = datasets[dataset_id]+"\t"

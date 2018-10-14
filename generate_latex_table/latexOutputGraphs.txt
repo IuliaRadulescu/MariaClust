@@ -1,0 +1,358 @@
+\begin{figure*}[!ht]
+	\centering
+	\begin{subfigure}{\columnwidth}
+		\centering
+				\begin{tikzpicture}[]
+			\begin{axis}[
+				xmin=0,
+				xmax=2,
+				xtick,
+				ymin=0,
+				ymax=1,
+				bar width=4pt,
+				ybar=4pt,
+				legend style={at={(3,0.5)}, anchor=east, legend columns=2}
+				]
+				\addplot+[color=blue] coordinates {(1,0.991)};%MariaClust
+				\addplot+[color=red] coordinates {(1,0.733)};%Birch
+				\addplot+[color=green] coordinates {(1,0.586)};%Clarans
+				\addplot+[color=orange] coordinates {(1,1.0)};%Cure
+				\addplot+[color=gray] coordinates {(1,0.827)};%Gaussian Mixture
+				\addplot+[color=cyan] coordinates {(1,0.8)};%Hierarchical
+				\addplot+[color=brown] coordinates {(1,0.762)};%KMeans
+				\addplot+[color=magenta] coordinates {(1,0.808)};%DBSCAN
+				\addplot+[color=yellow] coordinates {(1,0.99)};%Spectral Clustering
+\legend{MariaClust,Birch,Clarans,Cure,Gaussian Mixture,Hierarchical,KMeans,DBSCAN,Spectral Clustering};
+			\end{axis}
+		\end{tikzpicture}
+		\caption{Aggregation}
+		\label{fig:aRI_aggregation}
+
+	\end{subfigure}
+	\begin{subfigure}{0.32\columnwidth}
+		\centering
+		\begin{tikzpicture}[]
+			\begin{axis}[
+				xmin=0,
+				xmax=2,
+				xtick,
+				ymin=0,
+				ymax=1,
+				bar width=4pt,
+				ybar=4pt,
+				]
+				\addplot+[color=blue] coordinates {(1,0.911)};%MariaClust
+				\addplot+[color=red] coordinates {(1,0.809)};%Birch
+				\addplot+[color=green] coordinates {(1,0.481)};%Clarans
+				\addplot+[color=orange] coordinates {(1,0.805)};%Cure
+				\addplot+[color=gray] coordinates {(1,0.596)};%Gaussian Mixture
+				\addplot+[color=cyan] coordinates {(1,0.742)};%Hierarchical
+				\addplot+[color=brown] coordinates {(1,0.538)};%KMeans
+				\addplot+[color=magenta] coordinates {(1,0.743)};%DBSCAN
+				\addplot+[color=yellow] coordinates {(1,0.531)};%Spectral Clustering
+			\end{axis}
+		\end{tikzpicture}
+		\caption{Compound}
+		\label{fig:aRI_compound}
+
+	\end{subfigure}
+	\begin{subfigure}{0.32\columnwidth}
+		\centering
+		\begin{tikzpicture}[]
+			\begin{axis}[
+				xmin=0,
+				xmax=2,
+				xtick,
+				ymin=0,
+				ymax=1,
+				bar width=4pt,
+				ybar=4pt,
+				]
+				\addplot+[color=blue] coordinates {(1,0.914)};%MariaClust
+				\addplot+[color=red] coordinates {(1,0.884)};%Birch
+				\addplot+[color=green] coordinates {(1,0.6)};%Clarans
+				\addplot+[color=orange] coordinates {(1,0.664)};%Cure
+				\addplot+[color=gray] coordinates {(1,0.897)};%Gaussian Mixture
+				\addplot+[color=cyan] coordinates {(1,0.92)};%Hierarchical
+				\addplot+[color=brown] coordinates {(1,0.953)};%KMeans
+				\addplot+[color=magenta] coordinates {(1,0.682)};%DBSCAN
+				\addplot+[color=yellow] coordinates {(1,0.95)};%Spectral Clustering
+			\end{axis}
+		\end{tikzpicture}
+		\caption{D31}
+		\label{fig:aRI_d31}
+
+	\end{subfigure}
+	\begin{subfigure}{0.32\columnwidth}
+		\centering
+		\begin{tikzpicture}[]
+			\begin{axis}[
+				xmin=0,
+				xmax=2,
+				xtick,
+				ymin=0,
+				ymax=1,
+				bar width=4pt,
+				ybar=4pt,
+				]
+				\addplot+[color=blue] coordinates {(1,1.0)};%MariaClust
+				\addplot+[color=red] coordinates {(1,0.385)};%Birch
+				\addplot+[color=green] coordinates {(1,0.183)};%Clarans
+				\addplot+[color=orange] coordinates {(1,0.013)};%Cure
+				\addplot+[color=gray] coordinates {(1,0.299)};%Gaussian Mixture
+				\addplot+[color=cyan] coordinates {(1,0.013)};%Hierarchical
+				\addplot+[color=brown] coordinates {(1,0.453)};%KMeans
+				\addplot+[color=magenta] coordinates {(1,0.0)};%DBSCAN
+				\addplot+[color=yellow] coordinates {(1,0.013)};%Spectral Clustering
+			\end{axis}
+		\end{tikzpicture}
+		\caption{Flame}
+		\label{fig:aRI_flame}
+
+	\end{subfigure}
+	\begin{subfigure}{0.32\columnwidth}
+		\centering
+		\begin{tikzpicture}[]
+			\begin{axis}[
+				xmin=0,
+				xmax=2,
+				xtick,
+				ymin=0,
+				ymax=1,
+				bar width=4pt,
+				ybar=4pt,
+				]
+				\addplot+[color=blue] coordinates {(1,1.0)};%MariaClust
+				\addplot+[color=red] coordinates {(1,0.515)};%Birch
+				\addplot+[color=green] coordinates {(1,0.356)};%Clarans
+				\addplot+[color=orange] coordinates {(1,-0.084)};%Cure
+				\addplot+[color=gray] coordinates {(1,-0.004)};%Gaussian Mixture
+				\addplot+[color=cyan] coordinates {(1,0.515)};%Hierarchical
+				\addplot+[color=brown] coordinates {(1,0.324)};%KMeans
+				\addplot+[color=magenta] coordinates {(1,0.948)};%DBSCAN
+				\addplot+[color=yellow] coordinates {(1,1.0)};%Spectral Clustering
+			\end{axis}
+		\end{tikzpicture}
+		\caption{Jain}
+		\label{fig:aRI_jain}
+
+	\end{subfigure}
+	\begin{subfigure}{0.32\columnwidth}
+		\centering
+		\begin{tikzpicture}[]
+			\begin{axis}[
+				xmin=0,
+				xmax=2,
+				xtick,
+				ymin=0,
+				ymax=1,
+				bar width=4pt,
+				ybar=4pt,
+				]
+				\addplot+[color=blue] coordinates {(1,0.971)};%MariaClust
+				\addplot+[color=red] coordinates {(1,0.477)};%Birch
+				\addplot+[color=green] coordinates {(1,0.395)};%Clarans
+				\addplot+[color=orange] coordinates {(1,0.487)};%Cure
+				\addplot+[color=gray] coordinates {(1,0.432)};%Gaussian Mixture
+				\addplot+[color=cyan] coordinates {(1,0.423)};%Hierarchical
+				\addplot+[color=brown] coordinates {(1,0.46)};%KMeans
+				\addplot+[color=magenta] coordinates {(1,0.605)};%DBSCAN
+				\addplot+[color=yellow] coordinates {(1,0.683)};%Spectral Clustering
+			\end{axis}
+		\end{tikzpicture}
+		\caption{Pathbased}
+		\label{fig:aRI_pathbased}
+
+	\end{subfigure}
+	\begin{subfigure}{0.32\columnwidth}
+		\centering
+		\begin{tikzpicture}[]
+			\begin{axis}[
+				xmin=0,
+				xmax=2,
+				xtick,
+				ymin=0,
+				ymax=1,
+				bar width=4pt,
+				ybar=4pt,
+				]
+				\addplot+[color=blue] coordinates {(1,0.982)};%MariaClust
+				\addplot+[color=red] coordinates {(1,0.972)};%Birch
+				\addplot+[color=green] coordinates {(1,0.713)};%Clarans
+				\addplot+[color=orange] coordinates {(1,0.914)};%Cure
+				\addplot+[color=gray] coordinates {(1,0.993)};%Gaussian Mixture
+				\addplot+[color=cyan] coordinates {(1,0.982)};%Hierarchical
+				\addplot+[color=brown] coordinates {(1,0.993)};%KMeans
+				\addplot+[color=magenta] coordinates {(1,0.802)};%DBSCAN
+				\addplot+[color=yellow] coordinates {(1,0.993)};%Spectral Clustering
+			\end{axis}
+		\end{tikzpicture}
+		\caption{R15}
+		\label{fig:aRI_r15}
+
+	\end{subfigure}
+	\begin{subfigure}{0.32\columnwidth}
+		\centering
+		\begin{tikzpicture}[]
+			\begin{axis}[
+				xmin=0,
+				xmax=2,
+				xtick,
+				ymin=0,
+				ymax=1,
+				bar width=4pt,
+				ybar=4pt,
+				]
+				\addplot+[color=blue] coordinates {(1,1.0)};%MariaClust
+				\addplot+[color=red] coordinates {(1,0.017)};%Birch
+				\addplot+[color=green] coordinates {(1,0.003)};%Clarans
+				\addplot+[color=orange] coordinates {(1,0.037)};%Cure
+				\addplot+[color=gray] coordinates {(1,-0.005)};%Gaussian Mixture
+				\addplot+[color=cyan] coordinates {(1,1.0)};%Hierarchical
+				\addplot+[color=brown] coordinates {(1,-0.006)};%KMeans
+				\addplot+[color=magenta] coordinates {(1,1.0)};%DBSCAN
+				\addplot+[color=yellow] coordinates {(1,1.0)};%Spectral Clustering
+			\end{axis}
+		\end{tikzpicture}
+		\caption{Spiral}
+		\label{fig:aRI_spiral}
+
+	\end{subfigure}
+	\begin{subfigure}{0.32\columnwidth}
+		\centering
+		\begin{tikzpicture}[]
+			\begin{axis}[
+				xmin=0,
+				xmax=2,
+				xtick,
+				ymin=0,
+				ymax=1,
+				bar width=4pt,
+				ybar=4pt,
+				]
+				\addplot+[color=blue] coordinates {(1,1.0)};%MariaClust
+				\addplot+[color=red] coordinates {(1,1.0)};%Birch
+				\addplot+[color=green] coordinates {(1,0.789)};%Clarans
+				\addplot+[color=orange] coordinates {(1,1.0)};%Cure
+				\addplot+[color=gray] coordinates {(1,1.0)};%Gaussian Mixture
+				\addplot+[color=cyan] coordinates {(1,1.0)};%Hierarchical
+				\addplot+[color=brown] coordinates {(1,1.0)};%KMeans
+				\addplot+[color=magenta] coordinates {(1,1.0)};%DBSCAN
+				\addplot+[color=yellow] coordinates {(1,0.0)};%Spectral Clustering
+			\end{axis}
+		\end{tikzpicture}
+		\caption{Dim032}
+		\label{fig:aRI_dim032}
+
+	\end{subfigure}
+	\begin{subfigure}{0.32\columnwidth}
+		\centering
+		\begin{tikzpicture}[]
+			\begin{axis}[
+				xmin=0,
+				xmax=2,
+				xtick,
+				ymin=0,
+				ymax=1,
+				bar width=4pt,
+				ybar=4pt,
+				]
+				\addplot+[color=blue] coordinates {(1,1.0)};%MariaClust
+				\addplot+[color=red] coordinates {(1,1.0)};%Birch
+				\addplot+[color=green] coordinates {(1,0.756)};%Clarans
+				\addplot+[color=orange] coordinates {(1,0.365)};%Cure
+				\addplot+[color=gray] coordinates {(1,1.0)};%Gaussian Mixture
+				\addplot+[color=cyan] coordinates {(1,1.0)};%Hierarchical
+				\addplot+[color=brown] coordinates {(1,1.0)};%KMeans
+				\addplot+[color=magenta] coordinates {(1,1.0)};%DBSCAN
+				\addplot+[color=yellow] coordinates {(1,0.0)};%Spectral Clustering
+			\end{axis}
+		\end{tikzpicture}
+		\caption{Dim064}
+		\label{fig:aRI_dim064}
+
+	\end{subfigure}
+	\begin{subfigure}{0.32\columnwidth}
+		\centering
+		\begin{tikzpicture}[]
+			\begin{axis}[
+				xmin=0,
+				xmax=2,
+				xtick,
+				ymin=0,
+				ymax=1,
+				bar width=4pt,
+				ybar=4pt,
+				]
+				\addplot+[color=blue] coordinates {(1,1.0)};%MariaClust
+				\addplot+[color=red] coordinates {(1,1.0)};%Birch
+				\addplot+[color=green] coordinates {(1,0.775)};%Clarans
+				\addplot+[color=orange] coordinates {(1,0.932)};%Cure
+				\addplot+[color=gray] coordinates {(1,1.0)};%Gaussian Mixture
+				\addplot+[color=cyan] coordinates {(1,1.0)};%Hierarchical
+				\addplot+[color=brown] coordinates {(1,1.0)};%KMeans
+				\addplot+[color=magenta] coordinates {(1,1.0)};%DBSCAN
+				\addplot+[color=yellow] coordinates {(1,0.001)};%Spectral Clustering
+			\end{axis}
+		\end{tikzpicture}
+		\caption{Dim128}
+		\label{fig:aRI_dim128}
+
+	\end{subfigure}
+	\begin{subfigure}{0.32\columnwidth}
+		\centering
+		\begin{tikzpicture}[]
+			\begin{axis}[
+				xmin=0,
+				xmax=2,
+				xtick,
+				ymin=0,
+				ymax=1,
+				bar width=4pt,
+				ybar=4pt,
+				]
+				\addplot+[color=blue] coordinates {(1,1.0)};%MariaClust
+				\addplot+[color=red] coordinates {(1,1.0)};%Birch
+				\addplot+[color=green] coordinates {(1,0.651)};%Clarans
+				\addplot+[color=orange] coordinates {(1,0.572)};%Cure
+				\addplot+[color=gray] coordinates {(1,1.0)};%Gaussian Mixture
+				\addplot+[color=cyan] coordinates {(1,1.0)};%Hierarchical
+				\addplot+[color=brown] coordinates {(1,1.0)};%KMeans
+				\addplot+[color=magenta] coordinates {(1,1.0)};%DBSCAN
+				\addplot+[color=yellow] coordinates {(1,0.0)};%Spectral Clustering
+			\end{axis}
+		\end{tikzpicture}
+		\caption{Dim256}
+		\label{fig:aRI_dim256}
+
+	\end{subfigure}
+	\begin{subfigure}{0.32\columnwidth}
+		\centering
+		\begin{tikzpicture}[]
+			\begin{axis}[
+				xmin=0,
+				xmax=2,
+				xtick,
+				ymin=0,
+				ymax=1,
+				bar width=4pt,
+				ybar=4pt,
+				]
+				\addplot+[color=blue] coordinates {(1,1.0)};%MariaClust
+				\addplot+[color=red] coordinates {(1,1.0)};%Birch
+				\addplot+[color=green] coordinates {(1,0.689)};%Clarans
+				\addplot+[color=orange] coordinates {(1,1.0)};%Cure
+				\addplot+[color=gray] coordinates {(1,1.0)};%Gaussian Mixture
+				\addplot+[color=cyan] coordinates {(1,1.0)};%Hierarchical
+				\addplot+[color=brown] coordinates {(1,1.0)};%KMeans
+				\addplot+[color=magenta] coordinates {(1,1.0)};%DBSCAN
+				\addplot+[color=yellow] coordinates {(1,0.0)};%Spectral Clustering
+			\end{axis}
+		\end{tikzpicture}
+		\caption{Dim512}
+		\label{fig:aRI_dim512}
+
+	\end{subfigure}
+	\caption{ARI comparison}
+	\label{fig:ari}
+\end{figure*}

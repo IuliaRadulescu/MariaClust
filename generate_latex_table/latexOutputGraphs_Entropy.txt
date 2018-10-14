@@ -1,0 +1,358 @@
+\begin{figure*}[!ht]
+	\centering
+	\begin{subfigure}{\columnwidth}
+		\centering
+				\begin{tikzpicture}[]
+			\begin{axis}[
+				xmin=0,
+				xmax=2,
+				xtick,
+				ymin=0,
+				ymax=1,
+				bar width=4pt,
+				ybar=4pt,
+				legend style={at={(3,0.5)}, anchor=east, legend columns=2}
+				]
+				\addplot+[color=blue] coordinates {(1,0.011)};%MariaClust
+				\addplot+[color=red] coordinates {(1,0.099)};%Birch
+				\addplot+[color=green] coordinates {(1,0.183)};%Clarans
+				\addplot+[color=orange] coordinates {(1,0.0)};%Cure
+				\addplot+[color=gray] coordinates {(1,0.081)};%Gaussian Mixture
+				\addplot+[color=cyan] coordinates {(1,0.037)};%Hierarchical
+				\addplot+[color=brown] coordinates {(1,0.062)};%KMeans
+				\addplot+[color=magenta] coordinates {(1,0.174)};%DBSCAN
+				\addplot+[color=yellow] coordinates {(1,0.011)};%Spectral Clustering
+\legend{MariaClust,Birch,Clarans,Cure,Gaussian Mixture,Hierarchical,KMeans,DBSCAN,Spectral Clustering};
+			\end{axis}
+		\end{tikzpicture}
+		\caption{Aggregation}
+		\label{fig:entropy_aggregation}
+
+	\end{subfigure}
+	\begin{subfigure}{0.32\columnwidth}
+		\centering
+		\begin{tikzpicture}[]
+			\begin{axis}[
+				xmin=0,
+				xmax=2,
+				xtick,
+				ymin=0,
+				ymax=1,
+				bar width=4pt,
+				ybar=4pt,
+				]
+				\addplot+[color=blue] coordinates {(1,0.114)};%MariaClust
+				\addplot+[color=red] coordinates {(1,0.185)};%Birch
+				\addplot+[color=green] coordinates {(1,0.315)};%Clarans
+				\addplot+[color=orange] coordinates {(1,0.186)};%Cure
+				\addplot+[color=gray] coordinates {(1,0.187)};%Gaussian Mixture
+				\addplot+[color=cyan] coordinates {(1,0.279)};%Hierarchical
+				\addplot+[color=brown] coordinates {(1,0.21)};%KMeans
+				\addplot+[color=magenta] coordinates {(1,0.282)};%DBSCAN
+				\addplot+[color=yellow] coordinates {(1,0.18)};%Spectral Clustering
+			\end{axis}
+		\end{tikzpicture}
+		\caption{Compound}
+		\label{fig:entropy_compound}
+
+	\end{subfigure}
+	\begin{subfigure}{0.32\columnwidth}
+		\centering
+		\begin{tikzpicture}[]
+			\begin{axis}[
+				xmin=0,
+				xmax=2,
+				xtick,
+				ymin=0,
+				ymax=1,
+				bar width=4pt,
+				ybar=4pt,
+				]
+				\addplot+[color=blue] coordinates {(1,0.051)};%MariaClust
+				\addplot+[color=red] coordinates {(1,0.062)};%Birch
+				\addplot+[color=green] coordinates {(1,0.184)};%Clarans
+				\addplot+[color=orange] coordinates {(1,0.166)};%Cure
+				\addplot+[color=gray] coordinates {(1,0.056)};%Gaussian Mixture
+				\addplot+[color=cyan] coordinates {(1,0.05)};%Hierarchical
+				\addplot+[color=brown] coordinates {(1,0.033)};%KMeans
+				\addplot+[color=magenta] coordinates {(1,0.136)};%DBSCAN
+				\addplot+[color=yellow] coordinates {(1,0.035)};%Spectral Clustering
+			\end{axis}
+		\end{tikzpicture}
+		\caption{D31}
+		\label{fig:entropy_d31}
+
+	\end{subfigure}
+	\begin{subfigure}{0.32\columnwidth}
+		\centering
+		\begin{tikzpicture}[]
+			\begin{axis}[
+				xmin=0,
+				xmax=2,
+				xtick,
+				ymin=0,
+				ymax=1,
+				bar width=4pt,
+				ybar=4pt,
+				]
+				\addplot+[color=blue] coordinates {(1,0.0)};%MariaClust
+				\addplot+[color=red] coordinates {(1,0.682)};%Birch
+				\addplot+[color=green] coordinates {(1,0.842)};%Clarans
+				\addplot+[color=orange] coordinates {(1,0.932)};%Cure
+				\addplot+[color=gray] coordinates {(1,0.606)};%Gaussian Mixture
+				\addplot+[color=cyan] coordinates {(1,0.932)};%Hierarchical
+				\addplot+[color=brown] coordinates {(1,0.557)};%KMeans
+				\addplot+[color=magenta] coordinates {(1,0.94)};%DBSCAN
+				\addplot+[color=yellow] coordinates {(1,0.932)};%Spectral Clustering
+			\end{axis}
+		\end{tikzpicture}
+		\caption{Flame}
+		\label{fig:entropy_flame}
+
+	\end{subfigure}
+	\begin{subfigure}{0.32\columnwidth}
+		\centering
+		\begin{tikzpicture}[]
+			\begin{axis}[
+				xmin=0,
+				xmax=2,
+				xtick,
+				ymin=0,
+				ymax=1,
+				bar width=4pt,
+				ybar=4pt,
+				]
+				\addplot+[color=blue] coordinates {(1,0.0)};%MariaClust
+				\addplot+[color=red] coordinates {(1,0.373)};%Birch
+				\addplot+[color=green] coordinates {(1,0.616)};%Clarans
+				\addplot+[color=orange] coordinates {(1,0.726)};%Cure
+				\addplot+[color=gray] coordinates {(1,0.651)};%Gaussian Mixture
+				\addplot+[color=cyan] coordinates {(1,0.373)};%Hierarchical
+				\addplot+[color=brown] coordinates {(1,0.49)};%KMeans
+				\addplot+[color=magenta] coordinates {(1,0.0)};%DBSCAN
+				\addplot+[color=yellow] coordinates {(1,0.0)};%Spectral Clustering
+			\end{axis}
+		\end{tikzpicture}
+		\caption{Jain}
+		\label{fig:entropy_jain}
+
+	\end{subfigure}
+	\begin{subfigure}{0.32\columnwidth}
+		\centering
+		\begin{tikzpicture}[]
+			\begin{axis}[
+				xmin=0,
+				xmax=2,
+				xtick,
+				ymin=0,
+				ymax=1,
+				bar width=4pt,
+				ybar=4pt,
+				]
+				\addplot+[color=blue] coordinates {(1,0.047)};%MariaClust
+				\addplot+[color=red] coordinates {(1,0.475)};%Birch
+				\addplot+[color=green] coordinates {(1,0.579)};%Clarans
+				\addplot+[color=orange] coordinates {(1,0.459)};%Cure
+				\addplot+[color=gray] coordinates {(1,0.522)};%Gaussian Mixture
+				\addplot+[color=cyan] coordinates {(1,0.534)};%Hierarchical
+				\addplot+[color=brown] coordinates {(1,0.487)};%KMeans
+				\addplot+[color=magenta] coordinates {(1,0.292)};%DBSCAN
+				\addplot+[color=yellow] coordinates {(1,0.243)};%Spectral Clustering
+			\end{axis}
+		\end{tikzpicture}
+		\caption{Pathbased}
+		\label{fig:entropy_pathbased}
+
+	\end{subfigure}
+	\begin{subfigure}{0.32\columnwidth}
+		\centering
+		\begin{tikzpicture}[]
+			\begin{axis}[
+				xmin=0,
+				xmax=2,
+				xtick,
+				ymin=0,
+				ymax=1,
+				bar width=4pt,
+				ybar=4pt,
+				]
+				\addplot+[color=blue] coordinates {(1,0.014)};%MariaClust
+				\addplot+[color=red] coordinates {(1,0.019)};%Birch
+				\addplot+[color=green] coordinates {(1,0.139)};%Clarans
+				\addplot+[color=orange] coordinates {(1,0.046)};%Cure
+				\addplot+[color=gray] coordinates {(1,0.006)};%Gaussian Mixture
+				\addplot+[color=cyan] coordinates {(1,0.014)};%Hierarchical
+				\addplot+[color=brown] coordinates {(1,0.006)};%KMeans
+				\addplot+[color=magenta] coordinates {(1,0.084)};%DBSCAN
+				\addplot+[color=yellow] coordinates {(1,0.006)};%Spectral Clustering
+			\end{axis}
+		\end{tikzpicture}
+		\caption{R15}
+		\label{fig:entropy_r15}
+
+	\end{subfigure}
+	\begin{subfigure}{0.32\columnwidth}
+		\centering
+		\begin{tikzpicture}[]
+			\begin{axis}[
+				xmin=0,
+				xmax=2,
+				xtick,
+				ymin=0,
+				ymax=1,
+				bar width=4pt,
+				ybar=4pt,
+				]
+				\addplot+[color=blue] coordinates {(1,0.0)};%MariaClust
+				\addplot+[color=red] coordinates {(1,0.98)};%Birch
+				\addplot+[color=green] coordinates {(1,0.985)};%Clarans
+				\addplot+[color=orange] coordinates {(1,0.918)};%Cure
+				\addplot+[color=gray] coordinates {(1,0.999)};%Gaussian Mixture
+				\addplot+[color=cyan] coordinates {(1,0.0)};%Hierarchical
+				\addplot+[color=brown] coordinates {(1,0.999)};%KMeans
+				\addplot+[color=magenta] coordinates {(1,0.0)};%DBSCAN
+				\addplot+[color=yellow] coordinates {(1,0.0)};%Spectral Clustering
+			\end{axis}
+		\end{tikzpicture}
+		\caption{Spiral}
+		\label{fig:entropy_spiral}
+
+	\end{subfigure}
+	\begin{subfigure}{0.32\columnwidth}
+		\centering
+		\begin{tikzpicture}[]
+			\begin{axis}[
+				xmin=0,
+				xmax=2,
+				xtick,
+				ymin=0,
+				ymax=1,
+				bar width=4pt,
+				ybar=4pt,
+				]
+				\addplot+[color=blue] coordinates {(1,0.0)};%MariaClust
+				\addplot+[color=red] coordinates {(1,0.0)};%Birch
+				\addplot+[color=green] coordinates {(1,0.11)};%Clarans
+				\addplot+[color=orange] coordinates {(1,0.0)};%Cure
+				\addplot+[color=gray] coordinates {(1,0.0)};%Gaussian Mixture
+				\addplot+[color=cyan] coordinates {(1,0.0)};%Hierarchical
+				\addplot+[color=brown] coordinates {(1,0.0)};%KMeans
+				\addplot+[color=magenta] coordinates {(1,0.0)};%DBSCAN
+				\addplot+[color=yellow] coordinates {(1,0.962)};%Spectral Clustering
+			\end{axis}
+		\end{tikzpicture}
+		\caption{Dim032}
+		\label{fig:entropy_dim032}
+
+	\end{subfigure}
+	\begin{subfigure}{0.32\columnwidth}
+		\centering
+		\begin{tikzpicture}[]
+			\begin{axis}[
+				xmin=0,
+				xmax=2,
+				xtick,
+				ymin=0,
+				ymax=1,
+				bar width=4pt,
+				ybar=4pt,
+				]
+				\addplot+[color=blue] coordinates {(1,0.0)};%MariaClust
+				\addplot+[color=red] coordinates {(1,0.0)};%Birch
+				\addplot+[color=green] coordinates {(1,0.126)};%Clarans
+				\addplot+[color=orange] coordinates {(1,0.306)};%Cure
+				\addplot+[color=gray] coordinates {(1,0.0)};%Gaussian Mixture
+				\addplot+[color=cyan] coordinates {(1,0.0)};%Hierarchical
+				\addplot+[color=brown] coordinates {(1,0.0)};%KMeans
+				\addplot+[color=magenta] coordinates {(1,0.0)};%DBSCAN
+				\addplot+[color=yellow] coordinates {(1,0.969)};%Spectral Clustering
+			\end{axis}
+		\end{tikzpicture}
+		\caption{Dim064}
+		\label{fig:entropy_dim064}
+
+	\end{subfigure}
+	\begin{subfigure}{0.32\columnwidth}
+		\centering
+		\begin{tikzpicture}[]
+			\begin{axis}[
+				xmin=0,
+				xmax=2,
+				xtick,
+				ymin=0,
+				ymax=1,
+				bar width=4pt,
+				ybar=4pt,
+				]
+				\addplot+[color=blue] coordinates {(1,0.0)};%MariaClust
+				\addplot+[color=red] coordinates {(1,0.0)};%Birch
+				\addplot+[color=green] coordinates {(1,0.13)};%Clarans
+				\addplot+[color=orange] coordinates {(1,0.033)};%Cure
+				\addplot+[color=gray] coordinates {(1,0.0)};%Gaussian Mixture
+				\addplot+[color=cyan] coordinates {(1,0.0)};%Hierarchical
+				\addplot+[color=brown] coordinates {(1,0.0)};%KMeans
+				\addplot+[color=magenta] coordinates {(1,0.0)};%DBSCAN
+				\addplot+[color=yellow] coordinates {(1,0.968)};%Spectral Clustering
+			\end{axis}
+		\end{tikzpicture}
+		\caption{Dim128}
+		\label{fig:entropy_dim128}
+
+	\end{subfigure}
+	\begin{subfigure}{0.32\columnwidth}
+		\centering
+		\begin{tikzpicture}[]
+			\begin{axis}[
+				xmin=0,
+				xmax=2,
+				xtick,
+				ymin=0,
+				ymax=1,
+				bar width=4pt,
+				ybar=4pt,
+				]
+				\addplot+[color=blue] coordinates {(1,0.0)};%MariaClust
+				\addplot+[color=red] coordinates {(1,0.0)};%Birch
+				\addplot+[color=green] coordinates {(1,0.156)};%Clarans
+				\addplot+[color=orange] coordinates {(1,0.181)};%Cure
+				\addplot+[color=gray] coordinates {(1,0.0)};%Gaussian Mixture
+				\addplot+[color=cyan] coordinates {(1,0.0)};%Hierarchical
+				\addplot+[color=brown] coordinates {(1,0.0)};%KMeans
+				\addplot+[color=magenta] coordinates {(1,0.0)};%DBSCAN
+				\addplot+[color=yellow] coordinates {(1,0.976)};%Spectral Clustering
+			\end{axis}
+		\end{tikzpicture}
+		\caption{Dim256}
+		\label{fig:entropy_dim256}
+
+	\end{subfigure}
+	\begin{subfigure}{0.32\columnwidth}
+		\centering
+		\begin{tikzpicture}[]
+			\begin{axis}[
+				xmin=0,
+				xmax=2,
+				xtick,
+				ymin=0,
+				ymax=1,
+				bar width=4pt,
+				ybar=4pt,
+				]
+				\addplot+[color=blue] coordinates {(1,0.0)};%MariaClust
+				\addplot+[color=red] coordinates {(1,0.0)};%Birch
+				\addplot+[color=green] coordinates {(1,0.149)};%Clarans
+				\addplot+[color=orange] coordinates {(1,0.0)};%Cure
+				\addplot+[color=gray] coordinates {(1,0.0)};%Gaussian Mixture
+				\addplot+[color=cyan] coordinates {(1,0.0)};%Hierarchical
+				\addplot+[color=brown] coordinates {(1,0.0)};%KMeans
+				\addplot+[color=magenta] coordinates {(1,0.0)};%DBSCAN
+				\addplot+[color=yellow] coordinates {(1,0.98)};%Spectral Clustering
+			\end{axis}
+		\end{tikzpicture}
+		\caption{Dim512}
+		\label{fig:entropy_dim512}
+
+	\end{subfigure}
+	\caption{Entropy comparison}
+	\label{fig:entropy}
+\end{figure*}
