@@ -356,6 +356,29 @@ class MariaClust:
 					deja_parsati.append(neigh)
 					k=k-1
 		distances = list(set(distances))
+
+		if(len(distances)==0):
+			k=int(math.ceil(0.1*len(self.pixels_partition)))
+			distances = list()
+			for point in self.pixels_partition:
+				deja_parsati = list()
+				while(k>0):
+					neigh_id = 0
+					minDist = 99999
+					for id_point_k in range(len(self.pixels_partition)):
+						point_k = self.pixels_partition[id_point_k]
+						if(point_k not in deja_parsati):
+							dist = self.DistFunc(point, point_k)
+							if(dist < minDist and dist > 0):
+								minDist = dist
+								neigh_id = id_point_k
+					distances.append(minDist)
+					neigh = self.pixels_partition[neigh_id]
+					deja_parsati.append(neigh)
+					k=k-1
+			distances = list(set(distances))
+
+
 		return sum(distances)/len(distances)
 
 	def get_closestk_neigh(self, point, id_point):
