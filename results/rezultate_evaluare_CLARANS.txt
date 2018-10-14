@@ -76,4 +76,10 @@ Entropy: 0.148590234443
 RI: 0.9516090848
 ARI: 0.688673810239
 
+Rezultate evaluare pentru setul de date /home/iuliar/GITHUB_MARIACLUST/MariaClust/datasets/dim1024.txt
+Purity: 0.78125
+Entropy: 0.127067675832
+RI: 0.961147513441
+ARI: 0.72873588542
+
 

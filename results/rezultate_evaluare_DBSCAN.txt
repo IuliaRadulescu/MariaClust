@@ -1,44 +1,44 @@
 Rezultate evaluare pentru setul de date /home/iuliar/GITHUB_MARIACLUST/MariaClust/datasets/aggregation.txt
-Purity: 0.954314720812
-Entropy: 0.0366614665992
-RI: 0.938073645986
-ARI: 0.799529300646
+Purity: 0.826972010178
+Entropy: 0.173899384245
+RI: 0.926931492196
+ARI: 0.808081070384
 
 Rezultate evaluare pentru setul de date /home/iuliar/GITHUB_MARIACLUST/MariaClust/datasets/compound.txt
-Purity: 0.74686716792
-Entropy: 0.279181569318
-RI: 0.890354025768
-ARI: 0.742480944869
+Purity: 0.743073047859
+Entropy: 0.282102587709
+RI: 0.889906622904
+ARI: 0.743274277705
 
 Rezultate evaluare pentru setul de date /home/iuliar/GITHUB_MARIACLUST/MariaClust/datasets/d31.txt
-Purity: 0.96
-Entropy: 0.0495938970523
-RI: 0.99505542891
-ARI: 0.920183605422
+Purity: 0.740124740125
+Entropy: 0.136388685829
+RI: 0.973570851214
+ARI: 0.681972423505
 
 Rezultate evaluare pentru setul de date /home/iuliar/GITHUB_MARIACLUST/MariaClust/datasets/flame.txt
-Purity: 0.645833333333
-Entropy: 0.932450242348
-RI: 0.540620641562
-ARI: 0.0127504301311
+Purity: 0.642857142857
+Entropy: 0.940285958671
+RI: 0.538878842676
+ARI: 0.0
 
 Rezultate evaluare pentru setul de date /home/iuliar/GITHUB_MARIACLUST/MariaClust/datasets/jain.txt
-Purity: 0.860589812332
-Entropy: 0.372765947757
-RI: 0.759404998703
-ARI: 0.514616982682
+Purity: 1.0
+Entropy: 0.0
+RI: 0.975390024171
+ARI: 0.948420515297
 
 Rezultate evaluare pentru setul de date /home/iuliar/GITHUB_MARIACLUST/MariaClust/datasets/pathbased.txt
-Purity: 0.698996655518
-Entropy: 0.534008101594
-RI: 0.723238535611
-ARI: 0.422600048279
+Purity: 0.819727891156
+Entropy: 0.291890934212
+RI: 0.819112627986
+ARI: 0.605196225609
 
 Rezultate evaluare pentru setul de date /home/iuliar/GITHUB_MARIACLUST/MariaClust/datasets/r15.txt
-Purity: 0.991666666667
-Entropy: 0.0136438102261
-RI: 0.997807456873
-ARI: 0.981995500821
+Purity: 0.865874363328
+Entropy: 0.0842009861977
+RI: 0.971466685146
+ARI: 0.801740804174
 
 Rezultate evaluare pentru setul de date /home/iuliar/GITHUB_MARIACLUST/MariaClust/datasets/spiral.txt
 Purity: 1.0
@@ -81,4 +81,3 @@ Purity: 1.0
 Entropy: 0.0
 RI: 1.0
 ARI: 1.0
-
